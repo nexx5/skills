@@ -1,6 +1,8 @@
 # skills
 
-Anthropic Agent Skills 合集，由 [nexx5](https://github.com/nexx5) 维护。每个 skill 位于 `skills/<name>/`，可直接复制到 `~/.config/opencode/skills/` 或项目 `.opencode/skills/` 使用。
+Agent Skills 合集，发布由本人 [nexx5](https://github.com/nexx5) 创作或改编的skill。
+
+每个 skill 位于 `skills/<name>/`，可直接复制到 `~/.config/opencode/skills/` 或项目 `.opencode/skills/` 使用。
 
 ## 目录
 
