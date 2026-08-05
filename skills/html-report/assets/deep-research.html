@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="blue-orange">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度调研报告</title>
+<style>
+/* ===== 色板变量：blue-orange ===== */
+:root[data-theme="blue-orange"] {
+  --color-primary: #003f5c;
+  --color-secondary: #374c80;
+  --color-accent: #ff7c43;
+  --color-accent-light: #ffa600;
+  --color-neutral: #7aaf9f;
+  --color-muted: #bcbcbc;
+  --color-body: #333333;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f5f5f5;
+  --color-border: #e0e0e0;
+  --color-confidence-h: #2ca02c;
+  --color-confidence-m: #ff7c43;
+  --color-confidence-l: #d62728;
+  --color-gap: #999999;
+  /* 组件变量映射 */
+  --color-primary-light: #93c5fd;
+  --color-primary-dark: #002b3d;
+  --color-bg-soft: #f8fafc;
+  --color-bg-muted: #f1f5f9;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-success: #2ca02c;
+  --color-warning: #ff7c43;
+  --color-danger: #d62728;
+  --color-info: #003f5c;
+  --radius: 6px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1);
+}
+
+/* ===== 排版参数 ===== */
+:root {
+  font-size: 17px;
+  line-height: 1.6;
+  orphans: 3;
+  widows: 3;
+  /* 间距Token */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+}
+
+body {
+  font-family: Charter, Georgia, serif;
+  color: var(--color-body);
+  background: var(--color-bg);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+h1 { font-size: 1.5em; }
+h2 { font-size: 1.25em; }
+h3 { font-size: 1.1em; }
+
+a { color: var(--color-primary); }
+a:hover { color: var(--color-accent); }
+
+/* ===== 布局 ===== */
+.report-body {
+  max-width: 42em;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+/* ===== 读者定位段 ===== */
+.reader-profile {
+  background: var(--color-bg-alt);
+  border-left: 4px solid var(--color-primary);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.reader-profile__label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+/* ===== 执行摘要 ===== */
+.executive-summary {
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+.executive-summary h2 {
+  margin: 0 0 var(--space-md);
+  color: var(--color-primary);
+}
+.executive-summary ul {
+  padding-left: 1.25rem;
+}
+.executive-summary li {
+  margin-bottom: var(--space-sm);
+}
+
+/* ===== 时间线组件 ===== */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: var(--space-lg);
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: .55rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-border);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.25rem;
+  break-inside: avoid;
+}
+.timeline-item__dot {
+  position: absolute;
+  left: -2rem;
+  top: .3rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+.timeline-item__date {
+  font-size: .8rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-bottom: .15rem;
+}
+.timeline-item__event {
+  margin: 0;
+  font-size: .95rem;
+  color: var(--color-text);
+}
+.timeline-item__desc {
+  margin: .25rem 0 0;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== 对比卡片组件 ===== */
+.card-comparison {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  break-inside: avoid;
+}
+.card-comparison__title {
+  margin: 0 0 .75rem;
+  font-size: 1rem;
+  text-align: center;
+}
+.card-comparison__grid {
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr;
+  gap: 0;
+}
+.card-comparison__side {
+  padding: .75rem;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.card-comparison__side h5 {
+  margin: 0 0 .5rem;
+  font-size: .9rem;
+  color: var(--color-primary);
+}
+.card-comparison__side ul { margin: 0; padding-left: 1.25rem; }
+.card-comparison__divider {
+  background: var(--color-border);
+  margin: .5rem 0;
+}
+.card-comparison__verdict {
+  margin-top: .75rem;
+  padding-top: .5rem;
+  border-top: 1px solid var(--color-border);
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+@media (max-width: 480px) {
+  .card-comparison__grid { grid-template-columns: 1fr; }
+  .card-comparison__divider { height: 2px; margin: 0 .5rem; }
+}
+
+/* ===== 推荐矩阵 ===== */
+.recommendation-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-lg);
+  font-size: .9rem;
+}
+.recommendation-matrix th {
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 600;
+  font-size: .85rem;
+}
+.recommendation-matrix td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+.recommendation-matrix tr:hover td {
+  background: var(--color-bg-alt);
+}
+.recommendation-matrix__rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: .8rem;
+  color: #fff;
+}
+.recommendation-matrix__rank--1 { background: var(--color-success); }
+.recommendation-matrix__rank--2 { background: var(--color-accent); }
+.recommendation-matrix__rank--3 { background: var(--color-secondary); }
+
+/* ===== 矛盾对撞组件 ===== */
+.conflict-view {
+  background: var(--color-bg);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  break-inside: avoid;
+}
+.conflict-view__title {
+  margin: 0 0 .75rem;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+.conflict-view__grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: .75rem;
+  align-items: start;
+}
+.conflict-view__side {
+  padding: .75rem;
+  background: var(--color-bg-soft);
+  border-radius: var(--radius);
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.conflict-view__side p { margin: .5rem 0 0; line-height: 1.6; }
+.conflict-view__focal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem;
+  min-width: 80px;
+}
+.conflict-view__focal-label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  letter-spacing: .05em;
+  margin-bottom: .25rem;
+}
+.conflict-view__focal-text {
+  font-size: .8rem;
+  color: var(--color-text);
+  text-align: center;
+  writing-mode: vertical-rl;
+}
+.conflict-view__status {
+  margin-top: .75rem;
+  padding-top: .5rem;
+  border-top: 1px dashed var(--color-text-muted);
+  font-size: .85rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+@media (max-width: 480px) {
+  .conflict-view__grid { grid-template-columns: 1fr; }
+  .conflict-view__focal { flex-direction: row; min-width: unset; }
+  .conflict-view__focal-text { writing-mode: horizontal-tb; }
+}
+
+/* ===== 缺口框组件 ===== */
+.gap-box {
+  background: var(--color-bg-muted);
+  border: 2px dashed var(--color-text-muted);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+  break-inside: avoid;
+}
+.gap-box__label {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: var(--color-border);
+  padding: .1rem .5rem;
+  border-radius: 3px;
+  margin-bottom: .5rem;
+  letter-spacing: .05em;
+}
+.gap-box p { margin: .25rem 0; line-height: 1.6; }
+.gap-box__action {
+  margin-top: .5rem;
+  font-size: .85rem;
+  color: var(--color-text-muted);
+}
+.gap-box__action em { font-style: normal; color: var(--color-primary); }
+
+/* ===== 来源标签组件 ===== */
+.source-tag {
+  display: inline-block;
+  font-size: .8rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-muted);
+  padding: .15rem .5rem;
+  border-radius: 3px;
+  text-decoration: none;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+a.source-tag:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+a.source-tag::after {
+  content: " ↗";
+  font-size: .7em;
+}
+
+/* ===== 置信度徽章 ===== */
+.badge-confidence {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+  vertical-align: middle;
+  line-height: 1;
+}
+.badge-confidence[data-level="H"] { background: var(--color-confidence-h); }
+.badge-confidence[data-level="M"] { background: var(--color-confidence-m); color: var(--color-text); }
+.badge-confidence[data-level="L"] { background: var(--color-confidence-l); }
+
+/* ===== 章节通用 ===== */
+.section {
+  margin-bottom: var(--space-xl);
+}
+.section__title {
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ===== 来源清单 ===== */
+.source-list {
+  font-size: .85rem;
+  color: var(--color-text-secondary);
+}
+.source-list ol {
+  padding-left: 1.25rem;
+}
+.source-list li {
+  margin-bottom: var(--space-sm);
+  line-height: 1.5;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  .report-body {
+    padding: var(--space-md) var(--space-md);
+  }
+  h1 { font-size: 1.3em; }
+  .recommendation-matrix { font-size: .8rem; }
+  .recommendation-matrix th,
+  .recommendation-matrix td { padding: var(--space-xs) var(--space-sm); }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  body { font-size: 12pt; }
+  .report-body { padding: 0; max-width: 100%; }
+  .section { break-inside: avoid; }
+  h2 { page-break-after: avoid; }
+  .card-comparison,
+  .conflict-view,
+  .timeline-item,
+  .gap-box { break-inside: avoid; }
+  a { color: var(--color-body); text-decoration: none; }
+  a.source-tag::after { content: ""; }
+  .badge-confidence[data-level="H"]::after { content: " ●"; color: var(--color-confidence-h); }
+  .badge-confidence[data-level="M"]::after { content: " ●"; color: var(--color-confidence-m); }
+  .badge-confidence[data-level="L"]::after { content: " ●"; color: var(--color-confidence-l); }
+}
+</style>
+</head>
+<body>
+<div class="report-body">
+
+  <!-- ===== 1. 读者定位段 ===== -->
+  <!-- 插入内容：声明报告的读者画像。假设读者知道X、不知道Y、关心Z -->
+  <div class="reader-profile">
+    <div class="reader-profile__label">读者定位</div>
+    <p>假设读者：<strong>【知道什么】</strong>，<strong>【不知道什么】</strong>，<strong>【关心什么】</strong></p>
+    <!-- 叙事约束：SCQA开场——先讲情境(S)和冲突(C)，再给结论(Q) -->
+  </div>
+
+  <!-- ===== 2. 执行摘要 ===== -->
+  <!-- 插入内容：3-5条核心结论，每条配置信度徽章 -->
+  <section class="section" id="executive-summary">
+    <h2 class="section__title">核心结论</h2>
+    <div class="executive-summary">
+      <ul>
+        <li><span class="badge-confidence" data-level="H">H</span> 核心结论1 <span class="source-tag">来源·标题</span></li>
+        <li><span class="badge-confidence" data-level="M">M</span> 核心结论2 <span class="source-tag">来源·标题</span></li>
+        <li><span class="badge-confidence" data-level="H">H</span> 核心结论3 <span class="source-tag">来源·标题</span></li>
+      </ul>
+      <!-- 叙事约束：Data Story Arc推进——用数据变化趋势驱动叙事 -->
+    </div>
+  </section>
+
+  <!-- ===== 3. 纵向叙事区 ===== -->
+  <!-- 插入内容：3-5个里程碑事件，按时间排列 -->
+  <section class="section" id="vertical-narrative">
+    <h2 class="section__title">纵向：领域演变</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-item__dot"></div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">【年份/月份】</div>
+          <h5 class="timeline-item__event">【里程碑事件名】</h5>
+          <p class="timeline-item__desc">【事件描述——为什么重要、改变了什么】</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-item__dot"></div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">【年份/月份】</div>
+          <h5 class="timeline-item__event">【里程碑事件名】</h5>
+          <p class="timeline-item__desc">【事件描述】</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-item__dot"></div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">【年份/月份】</div>
+          <h5 class="timeline-item__event">【里程碑事件名】</h5>
+          <p class="timeline-item__desc">【事件描述】</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 横向对比区 ===== -->
+  <!-- 插入内容：3-4个方案的对比卡片 -->
+  <section class="section" id="horizontal-comparison">
+    <h2 class="section__title">横向：方案对比</h2>
+    <!-- 对比卡片1 -->
+    <div class="card-comparison">
+      <h4 class="card-comparison__title">【对比维度标题】</h4>
+      <div class="card-comparison__grid">
+        <div class="card-comparison__side" data-side="a">
+          <h5>方案 A</h5>
+          <ul>
+            <li>【特点/优势】</li>
+            <li>【特点/劣势】</li>
+          </ul>
+        </div>
+        <div class="card-comparison__divider"></div>
+        <div class="card-comparison__side" data-side="b">
+          <h5>方案 B</h5>
+          <ul>
+            <li>【特点/优势】</li>
+            <li>【特点/劣势】</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-comparison__verdict">
+        <strong>判定：</strong>【简述优劣】
+      </div>
+    </div>
+    <!-- 对比卡片2 -->
+    <div class="card-comparison">
+      <h4 class="card-comparison__title">【对比维度标题】</h4>
+      <div class="card-comparison__grid">
+        <div class="card-comparison__side" data-side="a">
+          <h5>方案 C</h5>
+          <ul>
+            <li>【特点】</li>
+          </ul>
+        </div>
+        <div class="card-comparison__divider"></div>
+        <div class="card-comparison__side" data-side="b">
+          <h5>方案 D</h5>
+          <ul>
+            <li>【特点】</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-comparison__verdict">
+        <strong>判定：</strong>【简述优劣】
+      </div>
+    </div>
+    <!-- 叙事约束：CER论证——每个对比给出Claim(主张)+Evidence(证据)+Reasoning(推理) -->
+  </section>
+
+  <!-- ===== 5. 交汇推荐区 ===== -->
+  <!-- 插入内容：推荐矩阵表格，横纵维度按调研主题定 -->
+  <section class="section" id="intersection">
+    <h2 class="section__title">交汇：推荐方案</h2>
+    <table class="recommendation-matrix">
+      <thead>
+        <tr>
+          <th>排名</th>
+          <th>方案</th>
+          <th>适用场景</th>
+          <th>置信度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="recommendation-matrix__rank recommendation-matrix__rank--1">1</span></td>
+          <td>【推荐方案名】</td>
+          <td>【适用场景描述】</td>
+          <td><span class="badge-confidence" data-level="H">H</span></td>
+        </tr>
+        <tr>
+          <td><span class="recommendation-matrix__rank recommendation-matrix__rank--2">2</span></td>
+          <td>【方案名】</td>
+          <td>【适用场景描述】</td>
+          <td><span class="badge-confidence" data-level="M">M</span></td>
+        </tr>
+        <tr>
+          <td><span class="recommendation-matrix__rank recommendation-matrix__rank--3">3</span></td>
+          <td>【方案名】</td>
+          <td>【适用场景描述】</td>
+          <td><span class="badge-confidence" data-level="M">M</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== 6. 矛盾与取舍区 ===== -->
+  <!-- 插入内容：来源间的矛盾对撞，不裁决只暴露分歧 -->
+  <section class="section" id="conflicts">
+    <h2 class="section__title">取舍与矛盾</h2>
+    <div class="conflict-view">
+      <h4 class="conflict-view__title">【矛盾焦点标题】</h4>
+      <div class="conflict-view__grid">
+        <div class="conflict-view__side" data-side="a">
+          <span class="source-tag">【来源A】</span>
+          <p>【观点A描述】</p>
+        </div>
+        <div class="conflict-view__focal">
+          <div class="conflict-view__focal-label">分歧焦点</div>
+          <div class="conflict-view__focal-text">【焦点简述】</div>
+        </div>
+        <div class="conflict-view__side" data-side="b">
+          <span class="source-tag">【来源B】</span>
+          <p>【观点B描述】</p>
+        </div>
+      </div>
+      <div class="conflict-view__status">
+        裁决：待补充 → 建议搜索 "【关键词】"
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7. 缺口声明区 ===== -->
+  <!-- 插入内容：单源结论、未验证假设、开放问题 -->
+  <section class="section" id="gaps">
+    <h2 class="section__title">未解问题</h2>
+    <div class="gap-box">
+      <div class="gap-box__label">待补</div>
+      <p>【缺口描述：单源结论/未验证假设/开放问题】</p>
+      <div class="gap-box__action">建议搜索："<em>【关键词】</em>"</div>
+    </div>
+    <div class="gap-box">
+      <div class="gap-box__label">待补</div>
+      <p>【缺口描述】</p>
+      <div class="gap-box__action">建议搜索："<em>【关键词】</em>"</div>
+    </div>
+  </section>
+
+  <!-- ===== 8. 来源清单 ===== -->
+  <!-- 插入内容：所有引用来源，使用原始URL/作者/标题 -->
+  <section class="section" id="sources">
+    <h2 class="section__title">来源</h2>
+    <div class="source-list">
+      <ol>
+        <li><a class="source-tag" href="【URL】" target="_blank" rel="noopener">【作者·标题】</a></li>
+        <li><span class="source-tag">【作者·标题】（来源URL缺失）</span></li>
+      </ol>
+    </div>
+    <!-- 叙事约束：AIDA结论——Attention(重申核心发现)→Interest(关联读者利益)→Desire(推荐行动)→Action(下一步) -->
+  </section>
+
+</div>
+</body>
+</html>

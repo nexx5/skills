@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="purple-green">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>决策指南</title>
+<style>
+/* ===== 色板变量：purple-green ===== */
+:root[data-theme="purple-green"] {
+  --color-primary: #3f007d;
+  --color-secondary: #7b2d8e;
+  --color-accent: #2ca02c;
+  --color-accent-light: #98df8a;
+  --color-neutral: #ffbb78;
+  --color-muted: #d3d3d3;
+  --color-body: #444444;
+  --color-bg: #fafafa;
+  --color-bg-alt: #f0f0f0;
+  --color-border: #ddd0dd;
+  --color-confidence-h: #2ca02c;
+  --color-confidence-m: #ffbb78;
+  --color-confidence-l: #d62728;
+  --color-gap: #999999;
+  /* 组件变量映射 */
+  --color-primary-light: #c4b5fd;
+  --color-primary-dark: #2a0054;
+  --color-bg-soft: #faf8fc;
+  --color-bg-muted: #f3f0f5;
+  --color-text: #1a1a2e;
+  --color-text-secondary: #555570;
+  --color-text-muted: #9a9ab0;
+  --color-success: #2ca02c;
+  --color-warning: #ffbb78;
+  --color-danger: #d62728;
+  --color-info: #3f007d;
+  --radius: 6px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1);
+}
+
+/* ===== 排版参数 ===== */
+:root {
+  font-size: 17px;
+  line-height: 1.6;
+  orphans: 3;
+  widows: 3;
+  /* 间距Token */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+}
+
+body {
+  font-family: Charter, Georgia, serif;
+  color: var(--color-body);
+  background: var(--color-bg);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+h1 { font-size: 1.5em; }
+h2 { font-size: 1.25em; }
+h3 { font-size: 1.1em; }
+
+a { color: var(--color-primary); }
+a:hover { color: var(--color-accent); }
+
+/* ===== 布局 ===== */
+.report-body {
+  max-width: 42em;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+/* ===== 读者定位段 ===== */
+.reader-profile {
+  background: var(--color-bg-alt);
+  border-left: 4px solid var(--color-primary);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.reader-profile__label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+/* ===== 核心结论（大字） ===== */
+.core-conclusion {
+  text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  margin-bottom: var(--space-xl);
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-alt) 100%);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+}
+.core-conclusion__text {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 1.4em;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+/* 叙事约束：PAS开场——Problem(问题)→Agitate(激化)→Solve(解决/结论先行) */
+
+/* ===== 行动建议三列卡片 ===== */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+.action-card {
+  border-radius: var(--radius);
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  break-inside: avoid;
+}
+.action-card--do {
+  background: #f0fdf4;
+  border: 2px solid var(--color-accent);
+}
+.action-card--dont {
+  background: #fef2f2;
+  border: 2px solid var(--color-danger);
+}
+.action-card--assess {
+  background: #fffbeb;
+  border: 2px solid var(--color-warning);
+}
+.action-card__icon {
+  font-size: 1.5em;
+  margin-bottom: var(--space-sm);
+}
+.action-card__title {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0 0 var(--space-sm);
+}
+.action-card--do .action-card__title { color: var(--color-accent); }
+.action-card--dont .action-card__title { color: var(--color-danger); }
+.action-card--assess .action-card__title { color: #b45309; }
+.action-card__list {
+  text-align: left;
+  font-size: .85rem;
+  color: var(--color-text-secondary);
+  padding-left: 1.25rem;
+  margin: 0;
+}
+.action-card__list li {
+  margin-bottom: var(--space-xs);
+}
+@media (max-width: 640px) {
+  .action-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== 发现卡片组件 ===== */
+.card-finding {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  break-inside: avoid;
+}
+.card-finding__header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .75rem;
+}
+.card-finding__title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text);
+  flex: 1;
+}
+.card-finding__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+@media (min-width: 640px) {
+  .card-finding__body { grid-template-columns: 2fr 1fr; }
+  .card-finding__gap { grid-column: 1 / -1; }
+}
+.card-finding__conclusion { line-height: 1.6; }
+.card-finding__evidence ul { margin: .25rem 0; padding-left: 1.25rem; }
+.card-finding__gap {
+  background: var(--color-bg-muted);
+  border: 1px dashed var(--color-text-muted);
+  border-radius: var(--radius);
+  padding: .5rem .75rem;
+  font-size: .85rem;
+  color: var(--color-text-muted);
+}
+.card-finding__footer {
+  margin-top: .75rem;
+  padding-top: .5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ===== 置信度徽章 ===== */
+.badge-confidence {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  font-size: .75rem;
+  font-weight: 700;
+  color: #fff;
+  vertical-align: middle;
+  line-height: 1;
+}
+.badge-confidence[data-level="H"] { background: var(--color-confidence-h); }
+.badge-confidence[data-level="M"] { background: var(--color-confidence-m); color: var(--color-text); }
+.badge-confidence[data-level="L"] { background: var(--color-confidence-l); }
+
+/* ===== 来源标签组件 ===== */
+.source-tag {
+  display: inline-block;
+  font-size: .8rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-muted);
+  padding: .15rem .5rem;
+  border-radius: 3px;
+  text-decoration: none;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+a.source-tag:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+a.source-tag::after {
+  content: " ↗";
+  font-size: .7em;
+}
+
+/* ===== 风险提示 ===== */
+.risk-box {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-left: 4px solid var(--color-danger);
+  border-radius: var(--radius);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.risk-box__label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-danger);
+  letter-spacing: .05em;
+  margin-bottom: var(--space-xs);
+}
+.risk-box ul {
+  margin: var(--space-xs) 0 0;
+  padding-left: 1.25rem;
+}
+.risk-box li { margin-bottom: var(--space-xs); }
+
+/* ===== 时间线（简化版，路线图） ===== */
+.roadmap {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-size: .9rem;
+}
+.roadmap__week {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: .85rem;
+  white-space: nowrap;
+}
+.roadmap__task {
+  color: var(--color-text-secondary);
+  padding-bottom: var(--space-md);
+  border-left: 2px solid var(--color-border);
+  padding-left: var(--space-md);
+}
+.roadmap__task:last-child {
+  border-left: 2px solid transparent;
+}
+.roadmap__task-title {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+.roadmap__task-desc {
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
+/* ===== 章节通用 ===== */
+.section {
+  margin-bottom: var(--space-xl);
+}
+.section__title {
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ===== 来源统计 ===== */
+.source-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+.source-stats__item {
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+.source-stats__value {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 1.8em;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+.source-stats__label {
+  font-size: .8rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  .report-body { padding: var(--space-md) var(--space-md); }
+  h1 { font-size: 1.3em; }
+  .source-stats { grid-template-columns: 1fr; }
+  .core-conclusion__text { font-size: 1.1em; }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  body { font-size: 12pt; }
+  .report-body { padding: 0; max-width: 100%; }
+  .section { break-inside: avoid; }
+  h2 { page-break-after: avoid; }
+  .card-finding,
+  .action-card { break-inside: avoid; }
+  a { color: var(--color-body); text-decoration: none; }
+  a.source-tag::after { content: ""; }
+  .action-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .badge-confidence[data-level="H"]::after { content: " ●"; color: var(--color-confidence-h); }
+  .badge-confidence[data-level="M"]::after { content: " ●"; color: var(--color-confidence-m); }
+  .badge-confidence[data-level="L"]::after { content: " ●"; color: var(--color-confidence-l); }
+}
+</style>
+</head>
+<body>
+<div class="report-body">
+
+  <!-- ===== 1. 读者定位段 ===== -->
+  <!-- 插入内容：声明读者画像。决策者关心什么、需要什么 -->
+  <div class="reader-profile">
+    <div class="reader-profile__label">读者定位</div>
+    <p>假设读者：<strong>【知道什么】</strong>，<strong>【不知道什么】</strong>，<strong>【关心什么】</strong></p>
+    <!-- 叙事约束：PAS开场——Problem(问题)→Agitate(激化)→Solve(结论先行) -->
+  </div>
+
+  <!-- ===== 2. 核心结论 ===== -->
+  <!-- 插入内容：1-2句大字结论，结论先行 -->
+  <div class="core-conclusion">
+    <p class="core-conclusion__text">【1-2句核心结论，结论先行，决策者一眼看到答案】</p>
+    <!-- 叙事约束：结论先行——先给结论，再给依据 -->
+  </div>
+
+  <!-- ===== 3. 行动建议 ===== -->
+  <!-- 插入内容：三列卡片——建议做/不建议/需评估 -->
+  <section class="section" id="actions">
+    <h2 class="section__title">行动建议</h2>
+    <div class="action-grid">
+      <div class="action-card action-card--do">
+        <div class="action-card__icon">✅</div>
+        <h4 class="action-card__title">建议做</h4>
+        <ul class="action-card__list">
+          <li>【建议行动1】</li>
+          <li>【建议行动2】</li>
+        </ul>
+      </div>
+      <div class="action-card action-card--dont">
+        <div class="action-card__icon">❌</div>
+        <h4 class="action-card__title">不建议</h4>
+        <ul class="action-card__list">
+          <li>【不建议行动1】</li>
+          <li>【不建议行动2】</li>
+        </ul>
+      </div>
+      <div class="action-card action-card--assess">
+        <div class="action-card__icon">⚠️</div>
+        <h4 class="action-card__title">需评估</h4>
+        <ul class="action-card__list">
+          <li>【需评估项1】</li>
+          <li>【需评估项2】</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 关键发现 ===== -->
+  <!-- 插入内容：3-5条发现卡片，含置信度badge -->
+  <section class="section" id="findings">
+    <h2 class="section__title">关键发现</h2>
+    <div class="card-finding">
+      <div class="card-finding__header">
+        <h4 class="card-finding__title">【发现标题】</h4>
+        <span class="badge-confidence" data-level="H">H</span>
+      </div>
+      <div class="card-finding__body">
+        <div class="card-finding__conclusion">【结论正文】</div>
+        <div class="card-finding__evidence">
+          <strong>依据</strong>
+          <ul>
+            <li>【依据1】</li>
+            <li>【依据2】</li>
+          </ul>
+        </div>
+        <div class="card-finding__gap">
+          <strong>缺口</strong>
+          <p>【待补充信息】</p>
+        </div>
+      </div>
+      <div class="card-finding__footer">
+        <span class="source-tag">【作者 · 标题】</span>
+      </div>
+    </div>
+    <div class="card-finding">
+      <div class="card-finding__header">
+        <h4 class="card-finding__title">【发现标题】</h4>
+        <span class="badge-confidence" data-level="M">M</span>
+      </div>
+      <div class="card-finding__body">
+        <div class="card-finding__conclusion">【结论正文】</div>
+        <div class="card-finding__evidence">
+          <strong>依据</strong>
+          <ul>
+            <li>【依据1】</li>
+          </ul>
+        </div>
+        <div class="card-finding__gap">
+          <strong>缺口</strong>
+          <p>【待补充信息】</p>
+        </div>
+      </div>
+      <div class="card-finding__footer">
+        <span class="source-tag">【作者 · 标题】</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 风险提示 ===== -->
+  <!-- 插入内容：关键风险列表 -->
+  <section class="section" id="risks">
+    <h2 class="section__title">风险提示</h2>
+    <div class="risk-box">
+      <div class="risk-box__label">风险</div>
+      <ul>
+        <li><strong>【风险1】</strong>——【影响描述】</li>
+        <li><strong>【风险2】</strong>——【影响描述】</li>
+        <li><strong>【风险3】</strong>——【影响描述】</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 6. 时间线（7周路线图） ===== -->
+  <!-- 插入内容：7周实施路线图 -->
+  <section class="section" id="roadmap">
+    <h2 class="section__title">实施路线图</h2>
+    <div class="roadmap">
+      <div class="roadmap__week">第1周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+      <div class="roadmap__week">第2周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+      <div class="roadmap__week">第3周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+      <div class="roadmap__week">第4周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+      <div class="roadmap__week">第5周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+      <div class="roadmap__week">第6周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+      <div class="roadmap__week">第7周</div>
+      <div class="roadmap__task">
+        <div class="roadmap__task-title">【阶段标题】</div>
+        <div class="roadmap__task-desc">【任务描述】</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7. 来源统计 ===== -->
+  <!-- 插入内容：来源数量统计 -->
+  <section class="section" id="sources">
+    <h2 class="section__title">来源统计</h2>
+    <div class="source-stats">
+      <div class="source-stats__item">
+        <div class="source-stats__value">【N】</div>
+        <div class="source-stats__label">资料来源</div>
+      </div>
+      <div class="source-stats__item">
+        <div class="source-stats__value">【N】</div>
+        <div class="source-stats__label">独立验证</div>
+      </div>
+      <div class="source-stats__item">
+        <div class="source-stats__value">【N】</div>
+        <div class="source-stats__label">待补缺口</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="blue-orange">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技术报告</title>
+<style>
+/* ===== 色板变量：blue-orange ===== */
+:root[data-theme="blue-orange"] {
+  --color-primary: #003f5c;
+  --color-secondary: #374c80;
+  --color-accent: #ff7c43;
+  --color-accent-light: #ffa600;
+  --color-neutral: #7aaf9f;
+  --color-muted: #bcbcbc;
+  --color-body: #333333;
+  --color-bg: #ffffff;
+  --color-bg-alt: #f5f5f5;
+  --color-border: #e0e0e0;
+  --color-confidence-h: #2ca02c;
+  --color-confidence-m: #ff7c43;
+  --color-confidence-l: #d62728;
+  --color-gap: #999999;
+  /* 组件变量映射 */
+  --color-primary-light: #93c5fd;
+  --color-primary-dark: #002b3d;
+  --color-bg-soft: #f8fafc;
+  --color-bg-muted: #f1f5f9;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-success: #2ca02c;
+  --color-warning: #ff7c43;
+  --color-danger: #d62728;
+  --color-info: #003f5c;
+  --radius: 6px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1);
+}
+
+/* ===== 排版参数 ===== */
+:root {
+  font-size: 17px;
+  line-height: 1.6;
+  orphans: 3;
+  widows: 3;
+  /* 间距Token */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+}
+
+body {
+  font-family: Charter, Georgia, serif;
+  color: var(--color-body);
+  background: var(--color-bg);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+h1 { font-size: 1.5em; }
+h2 { font-size: 1.25em; }
+h3 { font-size: 1.1em; }
+
+a { color: var(--color-primary); }
+a:hover { color: var(--color-accent); }
+
+/* ===== 布局 ===== */
+.report-body {
+  max-width: 42em;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+/* ===== 读者定位段 ===== */
+.reader-profile {
+  background: var(--color-bg-alt);
+  border-left: 4px solid var(--color-primary);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.reader-profile__label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-xs);
+}
+
+/* ===== 摘要框 ===== */
+.abstract-box {
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+.abstract-box h2 {
+  margin: 0 0 var(--space-md);
+  color: var(--color-primary);
+}
+.abstract-box p {
+  margin: 0;
+  line-height: 1.7;
+}
+/* 叙事约束：SCQA开场——Situation(情境)→Complication(冲突)→Question(问题)→Answer(回答) */
+
+/* ===== 方法框 ===== */
+.method-box {
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+.method-box h3 {
+  margin: 0 0 var(--space-md);
+  color: var(--color-primary);
+}
+.method-box__step {
+  margin-bottom: var(--space-md);
+  padding-left: 1.5rem;
+  position: relative;
+}
+.method-box__step::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 800;
+  font-size: .85rem;
+  color: var(--color-primary);
+}
+.method-box__step p {
+  margin: .25rem 0 0;
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== 结果区——图表占位 ===== */
+.figure-placeholder {
+  background: var(--color-bg-muted);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-muted);
+}
+.figure-placeholder__icon {
+  font-size: 2em;
+  margin-bottom: var(--space-sm);
+}
+.figure-placeholder__label {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 600;
+  font-size: .9rem;
+  margin-bottom: var(--space-xs);
+}
+.figure-placeholder__desc {
+  font-size: .8rem;
+}
+/* 图表标题=结论 */
+.figure-caption {
+  font-size: .85rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: calc(-1 * var(--space-md));
+  margin-bottom: var(--space-lg);
+  font-style: italic;
+}
+.figure-caption strong {
+  color: var(--color-text);
+  font-style: normal;
+}
+
+/* ===== 讨论区——局限框 ===== */
+.limitation-box {
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-warning);
+  border-radius: var(--radius);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-lg);
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+}
+.limitation-box__label {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  letter-spacing: .05em;
+  margin-bottom: var(--space-xs);
+}
+.limitation-box ul {
+  margin: var(--space-xs) 0 0;
+  padding-left: 1.25rem;
+}
+.limitation-box li { margin-bottom: var(--space-xs); }
+
+/* ===== 建议区 ===== */
+.recommendation-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: var(--space-lg);
+}
+.recommendation-list li {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  gap: var(--space-sm);
+  align-items: baseline;
+}
+.recommendation-list li:last-child { border-bottom: none; }
+.recommendation-list__marker {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+/* ===== 来源标签组件 ===== */
+.source-tag {
+  display: inline-block;
+  font-size: .8rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-muted);
+  padding: .15rem .5rem;
+  border-radius: 3px;
+  text-decoration: none;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+a.source-tag:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+a.source-tag::after {
+  content: " ↗";
+  font-size: .7em;
+}
+
+/* ===== 证据链组件 ===== */
+.evidence-chain {
+  border-left: 3px solid var(--color-primary);
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+  break-inside: avoid;
+}
+.evidence-chain__step {
+  position: relative;
+  margin-bottom: 1rem;
+  padding: .5rem .75rem;
+  background: var(--color-bg-soft);
+  border-radius: var(--radius);
+}
+.evidence-chain__step::before {
+  content: "";
+  position: absolute;
+  left: -1.75rem;
+  top: .75rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.evidence-chain__marker {
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  letter-spacing: .05em;
+  margin-bottom: .25rem;
+}
+.evidence-chain__content {
+  font-size: .9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+.evidence-chain__content blockquote {
+  margin: .25rem 0;
+  padding: .25rem .5rem;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-bg-muted);
+  font-style: italic;
+}
+.evidence-chain__step[data-step="conclusion"] {
+  background: var(--color-primary-light);
+  color: var(--color-text);
+}
+.evidence-chain__step[data-step="conclusion"] .evidence-chain__marker {
+  color: var(--color-primary-dark);
+}
+
+/* ===== 章节通用 ===== */
+.section {
+  margin-bottom: var(--space-xl);
+}
+.section__title {
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ===== 来源清单 ===== */
+.source-list {
+  font-size: .85rem;
+  color: var(--color-text-secondary);
+}
+.source-list ol {
+  padding-left: 1.25rem;
+}
+.source-list li {
+  margin-bottom: var(--space-sm);
+  line-height: 1.5;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  .report-body { padding: var(--space-md) var(--space-md); }
+  h1 { font-size: 1.3em; }
+  .figure-placeholder { padding: var(--space-lg) var(--space-md); }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  body { font-size: 12pt; }
+  .report-body { padding: 0; max-width: 100%; }
+  .section { break-inside: avoid; }
+  h2 { page-break-after: avoid; }
+  .figure-placeholder,
+  .evidence-chain,
+  .limitation-box,
+  .method-box { break-inside: avoid; }
+  a { color: var(--color-body); text-decoration: none; }
+  a.source-tag::after { content: ""; }
+  .figure-placeholder { border-style: solid; }
+}
+</style>
+</head>
+<body>
+<div class="report-body">
+
+  <!-- ===== 1. 读者定位段 ===== -->
+  <!-- 插入内容：工程师画像——需要什么技术背景 -->
+  <div class="reader-profile">
+    <div class="reader-profile__label">读者定位</div>
+    <p>假设读者：<strong>【知道什么】</strong>，<strong>【不知道什么】</strong>，<strong>【需要做什么】</strong></p>
+    <!-- 叙事约束：SCQA开场——Situation(情境)→Complication(冲突)→Question(问题)→Answer(回答) -->
+  </div>
+
+  <!-- ===== 2. 摘要 ===== -->
+  <!-- 插入内容：目的、方法、关键结果、结论 -->
+  <section class="section" id="abstract">
+    <div class="abstract-box">
+      <h2>摘要</h2>
+      <p>【目的】本文旨在……</p>
+      <p>【方法】我们采用……</p>
+      <p>【关键结果】发现……</p>
+      <p>【结论】建议……</p>
+    </div>
+  </section>
+
+  <!-- ===== 3. 背景与动机 ===== -->
+  <!-- 插入内容：问题背景、为什么研究这个、现有方案的不足 -->
+  <section class="section" id="background">
+    <h2 class="section__title">背景与动机</h2>
+    <p>【问题背景——为什么需要研究这个？】</p>
+    <p>【现有方案的不足——哪里不够好？】</p>
+    <p>【本调研要回答的核心问题】</p>
+    <!-- 叙事约束：SCQA——讲清Situation和Complication -->
+  </section>
+
+  <!-- ===== 4. 方法 ===== -->
+  <!-- 插入内容：调研方法、评估维度、数据来源 -->
+  <section class="section" id="method">
+    <h2 class="section__title">方法</h2>
+    <div class="method-box">
+      <h3>调研方法</h3>
+      <div class="method-box__step" data-step="①">
+        <strong>【方法步骤1标题】</strong>
+        <p>【方法描述——搜索策略、来源范围、筛选标准】</p>
+      </div>
+      <div class="method-box__step" data-step="②">
+        <strong>【方法步骤2标题】</strong>
+        <p>【评估维度、分析框架】</p>
+      </div>
+      <div class="method-box__step" data-step="③">
+        <strong>【方法步骤3标题】</strong>
+        <p>【验证方式、交叉检验方法】</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 结果 ===== -->
+  <!-- 插入内容：关键发现、数据、图表 -->
+  <section class="section" id="results">
+    <h2 class="section__title">结果</h2>
+
+    <p>【结果概述】</p>
+
+    <!-- 图表占位1 -->
+    <div class="figure-placeholder">
+      <div class="figure-placeholder__icon">📊</div>
+      <div class="figure-placeholder__label">【图表标题——结论性标题】</div>
+      <div class="figure-placeholder__desc">插入位置：SVG图表/数据表格/对比图</div>
+    </div>
+    <p class="figure-caption"><strong>【图表结论】</strong>——【一句话解读】</p>
+
+    <!-- 证据链示例 -->
+    <div class="evidence-chain">
+      <div class="evidence-chain__step" data-step="source">
+        <div class="evidence-chain__marker">来源</div>
+        <div class="evidence-chain__content">
+          <span class="source-tag">【作者 · 标题】</span>
+        </div>
+      </div>
+      <div class="evidence-chain__step" data-step="cite">
+        <div class="evidence-chain__marker">引用</div>
+        <div class="evidence-chain__content">
+          <blockquote>【原文关键引文】</blockquote>
+        </div>
+      </div>
+      <div class="evidence-chain__step" data-step="reason">
+        <div class="evidence-chain__marker">推理</div>
+        <div class="evidence-chain__content">
+          <p>【推理过程】</p>
+        </div>
+      </div>
+      <div class="evidence-chain__step" data-step="conclusion">
+        <div class="evidence-chain__marker">结论</div>
+        <div class="evidence-chain__content">
+          <p><strong>【最终结论】</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 图表占位2 -->
+    <div class="figure-placeholder">
+      <div class="figure-placeholder__icon">📊</div>
+      <div class="figure-placeholder__label">【图表标题——结论性标题】</div>
+      <div class="figure-placeholder__desc">插入位置：性能对比/benchmark结果/架构图</div>
+    </div>
+    <p class="figure-caption"><strong>【图表结论】</strong>——【一句话解读】</p>
+
+    <!-- 叙事约束：Toulmin论证——Claim(主张)+Data(数据)+Warrant(担保)+Backing(支撑)+Qualifier(限定)+Rebuttal(反驳) -->
+  </section>
+
+  <!-- ===== 6. 讨论（含局限） ===== -->
+  <!-- 插入内容：结果解读、与其他研究的对比、局限性 -->
+  <section class="section" id="discussion">
+    <h2 class="section__title">讨论</h2>
+    <p>【结果解读——这些发现意味着什么】</p>
+    <p>【与其他研究/方案的对比】</p>
+
+    <div class="limitation-box">
+      <div class="limitation-box__label">局限性</div>
+      <ul>
+        <li>【局限1——样本/来源/方法的限制】</li>
+        <li>【局限2——未覆盖的方面】</li>
+        <li>【局限3——时效性问题】</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 7. 建议 ===== -->
+  <!-- 插入内容：可执行的技术建议 -->
+  <section class="section" id="recommendations">
+    <h2 class="section__title">建议</h2>
+    <ul class="recommendation-list">
+      <li>
+        <span class="recommendation-list__marker">1</span>
+        <span>【建议1——具体可执行的技术建议】</span>
+      </li>
+      <li>
+        <span class="recommendation-list__marker">2</span>
+        <span>【建议2】</span>
+      </li>
+      <li>
+        <span class="recommendation-list__marker">3</span>
+        <span>【建议3】</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== 8. 来源清单 ===== -->
+  <!-- 插入内容：所有引用来源 -->
+  <section class="section" id="sources">
+    <h2 class="section__title">来源</h2>
+    <div class="source-list">
+      <ol>
+        <li><a class="source-tag" href="【URL】" target="_blank" rel="noopener">【作者·标题】</a></li>
+        <li><span class="source-tag">【作者·标题】（来源URL缺失）</span></li>
+      </ol>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
