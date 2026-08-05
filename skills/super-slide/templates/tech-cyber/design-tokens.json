@@ -1,0 +1,67 @@
+{
+  "theme": "tech-cyber",
+  "name": "科技暗青",
+  "mood": "技术、前沿、精密",
+  "reference": "暗色科技风，architecture-diagram 配色体系",
+  "colors": {
+    "primary": "#0A1628",
+    "primaryLight": "#1A2A4A",
+    "accent": "#22D3EE",
+    "accentLight": "rgba(34,211,238,0.12)",
+    "textPrimary": "#E8EDF5",
+    "textSecondary": "#8896A6",
+    "textMuted": "#4A5568",
+    "textOnPrimary": "#E8EDF5",
+    "textOnAccent": "#0A1628",
+    "bg": "#0A1628",
+    "bgAlt": "#0F1A2E",
+    "bgCard": "#1A2332",
+    "border": "rgba(255,255,255,0.08)",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "error": "#EF4444"
+  },
+  "typography": {
+    "displayFont": "Clash Display",
+    "bodyFont": "Satoshi",
+    "fallbackFonts": ["Arial", "Helvetica", "sans-serif"],
+    "scale": "major-third",
+    "baseSize": "10pt",
+    "sizes": {
+      "display": "30pt",
+      "h1": "24pt",
+      "h2": "17pt",
+      "h3": "13pt",
+      "body": "10pt",
+      "small": "8.5pt",
+      "micro": "7pt"
+    }
+  },
+  "spacing": {
+    "safeMargin": "24pt",
+    "cardGap": "8pt",
+    "cardPadding": "10pt",
+    "sectionGap": "14pt",
+    "anchorGap": "20pt"
+  },
+  "corners": {
+    "cardRadius": "8pt",
+    "buttonRadius": "6pt",
+    "badgeRadius": "4pt"
+  },
+  "shadows": {
+    "card": "0 2px 8px rgba(0,0,0,0.2)",
+    "elevated": "0 6px 20px rgba(0,0,0,0.3)"
+  },
+  "borders": {
+    "card": "1px solid rgba(255,255,255,0.06)",
+    "cardAccent": "1px solid #22D3EE",
+    "divider": "1px solid rgba(255,255,255,0.06)"
+  },
+  "visualCompensation": ["grid-bg", "subtle-glow", "corner-brackets"],
+  "dataViz": {
+    "chartColors": ["22D3EE", "34D399", "A78BFA", "FB7185", "FBBF24"],
+    "barHeight": "9pt",
+    "barRadius": "4pt"
+  }
+}

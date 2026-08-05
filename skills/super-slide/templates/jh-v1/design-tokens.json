@@ -1,0 +1,32 @@
+{
+  "theme": "jh-v1",
+  "name": "JH V1",
+  "mood": "初始版本，红+黑块+金色点缀，供对比参考",
+  "colors": {
+    "primary": "#c00000",
+    "accent": "#c8a96e",
+    "dark": "#1a1a1a",
+    "textPrimary": "#1a1a1a",
+    "textSecondary": "#5c5c5c",
+    "textMuted": "#999",
+    "bg": "#f5f0eb",
+    "bgCard": "#FFFFFF"
+  },
+  "typography": {
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Plus Jakarta Sans",
+    "fallbackFonts": ["Arial", "Helvetica", "sans-serif"],
+    "sizes": { "h1": "22pt", "body": "7pt" },
+    "weights": { "displayWeight": "300", "bodyWeight": "400", "labelWeight": "600" }
+  },
+  "spacing": { "safeMargin": "28pt", "cardGap": "5pt", "cardPadding": "9pt 11pt" },
+  "shadows": { "card": "0 3px 10px rgba(26,26,26,0.04)" },
+  "layoutPattern": {
+    "titleMarker": false,
+    "cardStyle": "shadow-only",
+    "heroStyle": "block-color",
+    "dividerStyle": "border-bottom",
+    "accentStyle": "circle-tag"
+  },
+  "decorative": { "topBanner": true, "cornerBracket": true }
+}

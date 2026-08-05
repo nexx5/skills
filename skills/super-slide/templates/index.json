@@ -1,0 +1,69 @@
+{
+  "schema": "2.0",
+  "description": "Super Slide 模板索引。新模板只需在 templates 下创建目录 + 注册到此文件。SKILL.md 不引用任何具体模板。",
+  "templates": [
+    {
+      "id": "consulting-navy",
+      "name": "标准模板 · 咨询深蓝",
+      "description": "MBB 咨询风格。深蓝主调 + 金色强调，适合商业方案、战略汇报",
+      "mood": "专业、信任、高端",
+      "path": "templates/consulting-navy/design-tokens.json"
+    },
+    {
+      "id": "tech-cyber",
+      "name": "科技暗青",
+      "description": "科技前沿风格。暗色底 + 青色强调，适合技术方案、系统架构",
+      "mood": "技术、前沿、精密",
+      "path": "templates/tech-cyber/design-tokens.json"
+    },
+    {
+      "id": "editorial-cream",
+      "name": "编辑暖白",
+      "description": "杂志编辑风格。暖白底 + 朱红强调，适合观点阐述、深度内容",
+      "mood": "叙事、深度、质感",
+      "path": "templates/editorial-cream/design-tokens.json"
+    },
+    {
+      "id": "modern-minimal",
+      "name": "现代极简",
+      "description": "瑞士极简风格。白底 + 黑 + 红强调，适合数据报告、干净排版",
+      "mood": "干净、精准、克制",
+      "path": "templates/modern-minimal/design-tokens.json"
+    },
+    {
+      "id": "jh-v1",
+      "name": "JH V1（初始版）",
+      "description": "红+黑块+金色点缀，供对比参考。红色顶栏、黑色hero块、金色角标",
+      "mood": "尝试版、对比参考",
+      "path": "templates/jh-v1/design-tokens.json"
+    },
+    {
+      "id": "jh-v2",
+      "name": "JH V2（克制版）",
+      "description": "红色仅用于标题和关键词，纸纹基底，无黑色块。装饰全部砍掉",
+      "mood": "克制、精准、留白",
+      "path": "templates/jh-v2/design-tokens.json"
+    },
+    {
+      "id": "jh-v3",
+      "name": "JH V3（红方块版）",
+      "description": "红色方块锚定每个标题。h1 32pt 800 Playfair Display，极端字体对比，卡片大padding撑满",
+      "mood": "高级、戏剧性对比、方形锚点",
+      "path": "templates/jh-v3/design-tokens.json"
+    },
+    {
+      "id": "magazine-layout",
+      "name": "编辑经典（杂志风）",
+      "description": "杂志叙事风。Playfair Display + Source Serif Pro + 金色方块锚点 + 装饰分隔",
+      "mood": "叙事、经典、质感",
+      "path": "templates/magazine-layout/design-tokens.json"
+    },
+    {
+      "id": "标准版",
+      "name": "标准版",
+      "description": "全屏scroll-snap翻页，深蓝科技底+蓝/青/金三色强调，固定导航栏和页码。每页一主题，信息密度高。适用于长篇调研/战略汇报。",
+      "mood": "深邃、专业、科技感、信息密度高",
+      "path": "templates/标准版/design-tokens.json"
+    }
+  ]
+}

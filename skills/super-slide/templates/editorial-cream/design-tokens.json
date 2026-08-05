@@ -1,0 +1,67 @@
+{
+  "theme": "editorial-cream",
+  "name": "编辑暖白",
+  "mood": "叙事、深度、质感",
+  "reference": "杂志编辑风格，magazine-layout 和 frontend-design 的 Editorial Gallery 风格融合",
+  "colors": {
+    "primary": "#1A1A2E",
+    "primaryLight": "#2D2D4A",
+    "accent": "#C41E3A",
+    "accentLight": "rgba(196,30,58,0.08)",
+    "textPrimary": "#1A1A1A",
+    "textSecondary": "#555555",
+    "textMuted": "#888888",
+    "textOnPrimary": "#FFFFFF",
+    "textOnAccent": "#FFFFFF",
+    "bg": "#F5F0E8",
+    "bgAlt": "#EDE8DE",
+    "bgCard": "#FAF8F4",
+    "border": "#D8D0C4",
+    "success": "#2E7D32",
+    "warning": "#E65100",
+    "error": "#C62828"
+  },
+  "typography": {
+    "displayFont": "Fraunces",
+    "bodyFont": "Source Serif 4",
+    "fallbackFonts": ["Georgia", "Times New Roman", "serif"],
+    "scale": "perfect-fourth",
+    "baseSize": "11pt",
+    "sizes": {
+      "display": "34pt",
+      "h1": "26pt",
+      "h2": "19pt",
+      "h3": "15pt",
+      "body": "11pt",
+      "small": "9pt",
+      "micro": "7.5pt"
+    }
+  },
+  "spacing": {
+    "safeMargin": "28pt",
+    "cardGap": "12pt",
+    "cardPadding": "14pt",
+    "sectionGap": "18pt",
+    "anchorGap": "28pt"
+  },
+  "corners": {
+    "cardRadius": "2pt",
+    "buttonRadius": "0pt",
+    "badgeRadius": "2pt"
+  },
+  "shadows": {
+    "card": "0 1px 3px rgba(0,0,0,0.04)",
+    "elevated": "0 3px 10px rgba(0,0,0,0.06)"
+  },
+  "borders": {
+    "card": "1px solid #D8D0C4",
+    "cardAccent": "3px solid #C41E3A",
+    "divider": "1px solid #D8D0C4"
+  },
+  "visualCompensation": ["drop-cap", "decorative-rule", "pull-quote"],
+  "dataViz": {
+    "chartColors": ["1A1A2E", "C41E3A", "D8D0C4", "555555", "888888"],
+    "barHeight": "10pt",
+    "barRadius": "1pt"
+  }
+}

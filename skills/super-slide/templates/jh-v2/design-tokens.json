@@ -1,0 +1,35 @@
+{
+  "theme": "jh-v2",
+  "name": "JH V2",
+  "mood": "克制版，红色仅用于标题和关键词，纸纹基底",
+  "principle": "红色越克制越高级。无黑色块。金色和装饰全部砍掉。",
+  "colors": {
+    "primary": "#c00000",
+    "primaryMuted": "rgba(192,0,0,0.04)",
+    "textPrimary": "#1f1b18",
+    "textSecondary": "#7a6e66",
+    "textMuted": "#afa39a",
+    "bg": "#f5f1eb",
+    "bgCard": "#faf8f5",
+    "border": "#e6dfd7",
+    "warmDark": "#1f1b18"
+  },
+  "typography": {
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Plus Jakarta Sans",
+    "fallbackFonts": ["Arial", "Helvetica", "sans-serif"],
+    "sizes": { "h1": "26pt", "body": "6.5pt", "small": "5.5pt" },
+    "weights": { "displayWeight": "800", "bodyWeight": "400", "labelWeight": "600", "lightWeight": "300" },
+    "letterSpacing": { "caps": "0.22em", "display": "0.03em" }
+  },
+  "spacing": { "safeMargin": "30pt", "cardGap": "4pt", "cardPadding": "10pt 12pt" },
+  "shadows": { "card": "0 1px 4px rgba(31,27,24,0.03)" },
+  "layoutPattern": {
+    "titleMarker": false,
+    "cardStyle": "shadow-only",
+    "heroStyle": "quote-card",
+    "dividerStyle": "thin-line",
+    "accentStyle": "none"
+  },
+  "visualCompensation": ["paper-grain", "edge-warmth", "extreme-contrast", "zero-decorations"]
+}

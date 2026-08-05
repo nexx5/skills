@@ -1,0 +1,55 @@
+{
+  "theme": "magazine-layout",
+  "name": "编辑经典",
+  "mood": "杂志叙事风，衬线字体、装饰分隔、金色方块锚点",
+  "reference": "Classic Elegance from magazine-layout skill (Playfair + Source Serif + gold accents)",
+  "colors": {
+    "primary": "#2c3e50",
+    "secondary": "#8b7355",
+    "accent": "#c9a959",
+    "accentLight": "rgba(201,169,89,0.1)",
+    "textPrimary": "#2c3e50",
+    "textSecondary": "#666",
+    "textMuted": "#999",
+    "bg": "#faf8f5",
+    "bgAlt": "#f5f0ea",
+    "bgCard": "#fff",
+    "border": "#e5ddd5",
+    "gold": "#c9a959",
+    "warmBrown": "#8b7355"
+  },
+  "typography": {
+    "displayFont": "Playfair Display",
+    "bodyFont": "Source Serif Pro",
+    "chineseFont": "Noto Serif SC",
+    "fallbackFonts": ["Georgia", "Times New Roman", "serif"],
+    "sizes": { "h1": "24pt", "h2": "14pt", "body": "8pt", "small": "6.5pt", "tiny": "5pt" },
+    "weights": { "displayWeight": "700", "h1Weight": "700", "bodyWeight": "400" },
+    "letterSpacing": { "caps": "0.15em", "wide": "0.06em" },
+    "lineHeight": { "tight": "1.15", "body": "1.7", "loose": "1.9" }
+  },
+  "spacing": {
+    "safeMargin": "28pt",
+    "cardGap": "6pt",
+    "cardPadding": "10pt 12pt",
+    "sectionGap": "10pt"
+  },
+  "corners": { "cardRadius": "0pt" },
+  "shadows": { "card": "0 2px 8px rgba(44,62,80,0.05)" },
+  "borders": { "card": "1px solid #e5ddd5" },
+  "layoutPattern": {
+    "titleMarker": true,
+    "titleMarkerColor": "#c9a959",
+    "cardStyle": "bordered",
+    "heroStyle": "drop-cap",
+    "dividerStyle": "decorative-rule",
+    "accentStyle": "ornament"
+  },
+  "decorative": {
+    "topBanner": true,
+    "topBannerColor": "linear-gradient(90deg,#2c3e50,#8b7355)",
+    "cornerBracket": true,
+    "cornerBracketChar": "❧"
+  },
+  "visualCompensation": ["gold-square-marker", "drop-cap", "ornamental-divider", "generous-line-height", "pull-quote"]
+}

@@ -1,0 +1,67 @@
+{
+  "theme": "modern-minimal",
+  "name": "现代极简",
+  "mood": "干净、精准、克制",
+  "reference": "瑞士国际主义风格，Bauhaus 设计语言",
+  "colors": {
+    "primary": "#000000",
+    "primaryLight": "#333333",
+    "accent": "#E53935",
+    "accentLight": "rgba(229,57,53,0.08)",
+    "textPrimary": "#000000",
+    "textSecondary": "#666666",
+    "textMuted": "#999999",
+    "textOnPrimary": "#FFFFFF",
+    "textOnAccent": "#FFFFFF",
+    "bg": "#FFFFFF",
+    "bgAlt": "#F5F5F5",
+    "bgCard": "#FFFFFF",
+    "border": "#E0E0E0",
+    "success": "#2E7D32",
+    "warning": "#E65100",
+    "error": "#C62828"
+  },
+  "typography": {
+    "displayFont": "Archivo",
+    "bodyFont": "Nunito",
+    "fallbackFonts": ["Arial", "Helvetica", "sans-serif"],
+    "scale": "major-second",
+    "baseSize": "10pt",
+    "sizes": {
+      "display": "36pt",
+      "h1": "28pt",
+      "h2": "20pt",
+      "h3": "15pt",
+      "body": "10pt",
+      "small": "8pt",
+      "micro": "7pt"
+    }
+  },
+  "spacing": {
+    "safeMargin": "32pt",
+    "cardGap": "8pt",
+    "cardPadding": "10pt",
+    "sectionGap": "14pt",
+    "anchorGap": "24pt"
+  },
+  "corners": {
+    "cardRadius": "0pt",
+    "buttonRadius": "0pt",
+    "badgeRadius": "0pt"
+  },
+  "shadows": {
+    "card": "none",
+    "elevated": "none"
+  },
+  "borders": {
+    "card": "1px solid #E0E0E0",
+    "cardAccent": "2px solid #E53935",
+    "divider": "1px solid #E0E0E0"
+  },
+  "visualCompensation": ["grid-bg", "baseline-grid", "color-zone"],
+  "dataViz": {
+    "chartColors": ["000000", "E53935", "666666", "999999", "E0E0E0"],
+    "barHeight": "10pt",
+    "barRadius": "0pt"
+  }
+}

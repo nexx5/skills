@@ -1,0 +1,90 @@
+{
+  "theme": "jh",
+  "name": "JH",
+  "mood": "高级、精准、红色只言片语、留白中的力量",
+  "reference": "暗黑数据冲击(对比×留白) × 科技咨询深蓝(质感×秩序)，翻译为暖调红色语境",
+  "principle": "红色越克制，越高级。只在标题和关键词出现，金色和装饰全部砍掉",
+  "colors": {
+    "primary": "#c00000",
+    "primaryMuted": "rgba(192,0,0,0.04)",
+    "primaryGlow": "rgba(192,0,0,0.08)",
+    "textPrimary": "#1f1b18",
+    "textSecondary": "#7a6e66",
+    "textMuted": "#afa39a",
+    "textOnPrimary": "#FFFFFF",
+    "bg": "#f5f1eb",
+    "bgAlt": "#eee8e1",
+    "bgCard": "#faf8f5",
+    "border": "#e6dfd7",
+    "borderLight": "#f0eae3",
+    "warmDark": "#1f1b18"
+  },
+  "typography": {
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Plus Jakarta Sans",
+    "fallbackFonts": ["Arial", "Helvetica", "sans-serif"],
+    "scale": "radical",
+    "baseSize": "8pt",
+    "sizes": {
+      "h1": "26pt",
+      "h2": "16pt",
+      "body": "8pt",
+      "small": "6.5pt",
+      "micro": "5.5pt",
+      "tiny": "4.5pt"
+    },
+    "weights": {
+      "displayWeight": "800",
+      "bodyWeight": "400",
+      "labelWeight": "600",
+      "lightWeight": "300"
+    },
+    "letterSpacing": {
+      "caps": "0.22em",
+      "wide": "0.10em",
+      "normal": "0.01em",
+      "display": "0.03em"
+    },
+    "lineHeight": {
+      "tight": "1.1",
+      "body": "1.6",
+      "loose": "1.8"
+    }
+  },
+  "spacing": {
+    "safeMargin": "30pt",
+    "cardGap": "4pt",
+    "cardPadding": "12pt 14pt",
+    "sectionGap": "6pt",
+    "anchorGap": "8pt"
+  },
+  "corners": {
+    "cardRadius": "0pt",
+    "buttonRadius": "0pt",
+    "badgeRadius": "0pt"
+  },
+  "shadows": {
+    "card": "0 1px 4px rgba(31,27,24,0.03)",
+    "elevated": "0 4px 14px rgba(31,27,24,0.05)"
+  },
+  "borders": {
+    "card": "none",
+    "divider": "0.5px solid #e6dfd7"
+  },
+  "decorative": {
+    "topBanner": false,
+    "cornerBracket": false,
+    "titleUnderline": false,
+    "sectionBadge": false,
+    "cardAccentBar": false,
+    "onlyRedInTitle": true,
+    "onlyDecoration": "single-thin-line"
+  },
+  "visualCompensation": ["red-title-only", "paper-grain", "edge-warmth", "extreme-contrast", "generous-whitespace", "zero-decorations"],
+  "dataViz": {
+    "chartColors": ["c00000", "1f1b18", "7a6e66", "afa39a", "e6dfd7"],
+    "barHeight": "5pt",
+    "barRadius": "0pt",
+    "barBg": "#eee8e1"
+  }
+}

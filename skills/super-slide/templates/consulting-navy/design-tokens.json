@@ -1,0 +1,90 @@
+{
+  "theme": "consulting-navy",
+  "name": "咨询深蓝",
+  "mood": "专业、信任、高端、战略报告",
+  "reference": "MBB 咨询风格 × 杂志排版技法（首字下沉、装饰分隔、色块锚定、视觉补偿）",
+  "colors": {
+    "primary": "#0A2540",
+    "primaryLight": "#1A3A6B",
+    "primaryMuted": "rgba(10,37,64,0.04)",
+    "accent": "#D4A843",
+    "accentLight": "rgba(212,168,67,0.12)",
+    "accentGlow": "rgba(212,168,67,0.25)",
+    "textPrimary": "#1A1A1A",
+    "textSecondary": "#5B6770",
+    "textMuted": "#9AA3AE",
+    "textOnPrimary": "#FFFFFF",
+    "textOnAccent": "#1A1A1A",
+    "bg": "#F6F4F0",
+    "bgAlt": "#EEEAE4",
+    "bgCard": "#FFFFFF",
+    "bgWarm": "#FAF8F5",
+    "border": "#D8D4CE",
+    "borderLight": "#E8E4DE",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "error": "#EF4444",
+    "gradientNavy": "linear-gradient(135deg, #0A2540 0%, #1A3A6B 100%)",
+    "gradientGold": "linear-gradient(90deg, #D4A843 0%, #F0D98C 100%)"
+  },
+  "typography": {
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Plus Jakarta Sans",
+    "fallbackFonts": ["Arial", "Helvetica", "sans-serif"],
+    "scale": "major-third",
+    "baseSize": "10pt",
+    "sizes": {
+      "display": "34pt",
+      "h1": "26pt",
+      "h2": "18pt",
+      "h3": "14pt",
+      "body": "10pt",
+      "small": "8pt",
+      "micro": "6.5pt"
+    },
+    "letterSpacing": {
+      "caps": "0.12em",
+      "wide": "0.04em",
+      "normal": "0.01em"
+    }
+  },
+  "spacing": {
+    "safeMargin": "22pt",
+    "cardGap": "6pt",
+    "cardPadding": "8pt 10pt",
+    "sectionGap": "12pt",
+    "anchorGap": "18pt",
+    "bannerHeight": "5pt"
+  },
+  "corners": {
+    "cardRadius": "4pt",
+    "buttonRadius": "3pt",
+    "badgeRadius": "2pt"
+  },
+  "shadows": {
+    "card": "0 2px 6px rgba(10,37,64,0.08)",
+    "elevated": "0 6px 16px rgba(10,37,64,0.12)",
+    "subtle": "0 1px 3px rgba(10,37,64,0.05)"
+  },
+  "borders": {
+    "card": "1px solid #E8E4DE",
+    "cardAccent": "3px solid #D4A843",
+    "cardAccentNavy": "3px solid #0A2540",
+    "divider": "1px solid #E8E4DE"
+  },
+  "decorative": {
+    "topBanner": true,
+    "cornerBracketSize": "16pt",
+    "cornerBracketColor": "#D4A843",
+    "titleUnderline": true,
+    "sectionBadge": true,
+    "cardAccentBar": true
+  },
+  "visualCompensation": ["top-banner", "gold-underline", "corner-brackets", "color-zone", "warm-bg", "card-accent-bar", "section-pill"],
+  "dataViz": {
+    "chartColors": ["0A2540", "1A3A6B", "D4A843", "F0D98C", "5B6770"],
+    "barHeight": "7pt",
+    "barRadius": "3pt",
+    "barBg": "#E8E4DE"
+  }
+}

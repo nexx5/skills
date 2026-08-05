@@ -1,0 +1,105 @@
+{
+  "theme": "标准版",
+  "name": "标准版",
+  "mood": "深邃、专业、科技感、信息密度高",
+  "reference": "基于第一版AI产品规划-HtmlSlide的视觉风格固化。深蓝底+蓝/青/金三色强调，全屏scroll-snap翻页，一页一主题。适用于长篇调研/战略汇报。",
+  "principle": "全视口scroll-snap翻页，深色科技底+蓝/青/金三色分层强调。每页自包含（锚点+结构+证据），固定导航栏和页码。信息密度高但结构清晰。",
+  "layoutSystem": "full-viewport-scrollsnap",
+  "canvas": {
+    "type": "viewport",
+    "width": "100vw",
+    "height": "100vh",
+    "padding": "80px 10%"
+  },
+  "colors": {
+    "bg": "#0d1b2a",
+    "bgCard": "rgba(255,255,255,0.04)",
+    "bgCardHover": "rgba(255,255,255,0.06)",
+    "border": "rgba(255,255,255,0.08)",
+    "borderHover": "rgba(26,107,255,0.3)",
+    "textPrimary": "#f0f4f8",
+    "textSecondary": "#c8ced6",
+    "textMuted": "#8892a4",
+    "navy": "#0a1628",
+    "blue": "#1a6bff",
+    "blueLight": "#4a8cff",
+    "cyan": "#00d4ff",
+    "gold": "#f0b429",
+    "red": "#e74c3c",
+    "gray": "#8892a4",
+    "gradientTitle": ["#f0f4f8", "#4a8cff", "#00d4ff"],
+    "gradientDivider": ["#1a6bff", "#00d4ff"]
+  },
+  "typography": {
+    "displayFont": "Noto Sans SC",
+    "bodyFont": "Noto Sans SC",
+    "altFont": "Inter",
+    "fallbackFonts": ["sans-serif"],
+    "sizes": {
+      "titleSlideH1": "5rem",
+      "sectionH1": "4.2rem",
+      "h2": "2.6rem",
+      "h3": "1.4rem",
+      "h4": "1.1rem",
+      "body": "1.1rem",
+      "small": "0.85rem",
+      "micro": "0.75rem",
+      "stat": "2.8rem",
+      "statLabel": "0.85rem",
+      "cardNum": "2.4rem",
+      "tag": "0.75rem",
+      "footer": "0.75rem"
+    },
+    "weights": {
+      "h1Weight": "900",
+      "h2Weight": "700",
+      "bodyWeight": "400",
+      "boldWeight": "600"
+    },
+    "lineHeight": {
+      "tight": "1.1",
+      "body": "1.7",
+      "loose": "2"
+    }
+  },
+  "spacing": {
+    "sectionGap": "2rem",
+    "cardGap": "1.5rem",
+    "cardPadding": "1.8rem",
+    "cardMargin": "0 0 1rem 0",
+    "highlightPadding": "2rem",
+    "tagMarginBottom": "1.5rem"
+  },
+  "borders": {
+    "cardRadius": "16px",
+    "cardBorder": "1px solid rgba(255,255,255,0.08)",
+    "tagRadius": "100px",
+    "barRadius": "10px"
+  },
+  "shadows": {
+    "card": "none",
+    "cardHover": "0 4px 20px rgba(26,107,255,0.15)"
+  },
+  "navigation": {
+    "type": "fixed",
+    "logo": {"position": "fixed", "top": "24px", "left": "10%", "fontSize": "0.8rem", "opacity": "0.2"},
+    "pageNum": {"position": "fixed", "bottom": "24px", "right": "10%", "fontSize": "0.75rem", "opacity": "0.1"},
+    "footer": {"position": "absolute", "bottom": "30px", "left": "10%", "right": "10%", "fontSize": "0.75rem", "opacity": "0.15"}
+  },
+  "effects": {
+    "scrollSnap": "y mandatory",
+    "animation": "fadeUp 0.6s ease forwards",
+    "cardHover": "translateY(-2px)",
+    "gradientText": true,
+    "glowRadius": "radial-gradient(ellipse at center, rgba(26,107,255,0.06) 0%, transparent 70%)",
+    "dividerGlow": "linear-gradient(90deg, transparent, rgba(26,107,255,0.2), transparent)"
+  },
+  "components": {
+    "card": {"borderTop": "none", "hover": true, "icon": false},
+    "tag": {"accent": "blue/gold/cyan"},
+    "bar": {"height": "20px", "fillColors": {"high": "#1a6bff", "mid": "#00d4ff", "low": "#f0b429"}},
+    "stepNumber": {"shape": "circle", "size": "36px", "bg": "#1a6bff"},
+    "dataTable": {"rowHover": true, "headerColor": "#8892a4"}
+  },
+  "visualCompensation": ["glow-bg-effects", "gradient-text", "divider-lines", "fixed-navigation", "scroll-snap"]
+}

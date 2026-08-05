@@ -1,0 +1,57 @@
+{
+  "theme": "jh-v3",
+  "name": "JH V3 — 商务红",
+  "mood": "精准、权威、红色标签、干净白底",
+  "principle": "白底+红顶带+badge标题标签+1px边框红顶线卡片。去除所有装饰性方块，深色badge承载结构标记。垂直空间均匀分配。",
+  "colors": {
+    "primary": "#c00000",
+    "primaryMuted": "rgba(192,0,0,0.02)",
+    "textPrimary": "#1a1a1a",
+    "textSecondary": "#6B7280",
+    "textMuted": "#999",
+    "textOnPrimary": "#FFFFFF",
+    "bg": "#FFFFFF",
+    "bgAlt": "#F9F8F6",
+    "bgCard": "#FFFFFF",
+    "border": "#E8E4DC",
+    "badgeDark": "#1a1a1a",
+    "topStripe": "#c00000",
+    "cardTopLine": "#c00000",
+    "quoteBorder": "#c00000",
+    "hlColor": "#c00000"
+  },
+  "typography": {
+    "displayFont": "Plus Jakarta Sans",
+    "bodyFont": "Plus Jakarta Sans",
+    "fallbackFonts": ["Arial", "sans-serif"],
+    "sizes": { "h1": "24pt", "cardTitle": "8.5pt", "body": "6.5pt", "small": "5.5pt", "tiny": "4.5pt", "badge": "5.5pt", "innerBadge": "4.5pt" },
+    "weights": { "h1Weight": "800", "cardTitleWeight": "700", "bodyWeight": "400", "labelWeight": "700", "hlWeight": "600" },
+    "letterSpacing": { "caps": "0.08em", "display": "-0.01em" },
+    "lineHeight": { "tight": "1.1", "body": "1.4", "loose": "1.6" }
+  },
+  "spacing": {
+    "safeMargin": "28pt",
+    "cardGap": "8pt",
+    "cardPadding": "12pt 12pt 14pt",
+    "diffCardPadding": "14pt 12pt 14pt",
+    "heroPadding": "16pt 14pt 16pt",
+    "sectionGap": "6pt",
+    "anchorGap": "2pt"
+  },
+  "shadows": { "card": "none" },
+  "layoutPattern": {
+    "titleMarker": false,
+    "topStripe": true,
+    "topStripeHeight": "3pt",
+    "cardStyle": "bordered-top-accent",
+    "cardBorderWidth": "1px",
+    "cardTopLineHeight": "2px",
+    "borderRadius": "3pt",
+    "heroStyle": "bordered-hero",
+    "dividerStyle": "none",
+    "accentStyle": "badge-label",
+    "badgeStyle": "dark-fill",
+    "sceneCardStyle": "top-border-only"
+  },
+  "visualCompensation": ["badge-anchors", "generous-inner-padding", "top-stripe", "card-border-accent", "no-decorative-markers"]
+}
