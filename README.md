@@ -16,6 +16,7 @@ Agent Skills 合集，发布由本人 [nexx5](https://github.com/nexx5) 创作�
 | [redfox](skills/redfox/) | 基于 RedFoxHub API 搜索小红书和公众号内容。两级搜索策略：先查优质库，结果不足时自动降级到广域库（仅公众号）。需自行配置 `REDFOX_API_KEY`（环境变量或 config.json）。 |
 | [kb-retriever](skills/kb-retriever/) | 渐进式本地知识库检索。grep-first + 窗口读取，从不整文件加载，大语料下控制 token 消耗。支持文本与 PDF 检索。 |
 | [subagent-resume](skills/subagent-resume/) | 接续中断的 sub agent，避免从头重派浪费。按任务名称查询 opencode 数据库匹配 sub agent session，返回 task_id + 中断状态，供 Task 工具恢复接续。**仅适用于 opencode 环境**。 |
+| [MOA](skills/MOA/) | 跨会话多模型协作。plugin 负责传话，双方会话注册同一监听目录后自动配对启动，按角色（方案/审核、分析/评论等任意）迭代碰撞，输出含共识项/已采纳修订/分歧的三段文件。部署用随附 `scripts/deploy.js`。 |
 
 ## 改编/转载类
 
