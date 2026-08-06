@@ -119,17 +119,20 @@ node "<skill目录>/scripts/deploy.js"
 2. **Read** `tasks.json`，确认哪些任务 `status=done` 且不再需要
 3. **只删除 `done` 条目**；`pending`/`active`（进行中）任务**绝不能删**
 4. **写回**：用 Write 工具或 node 写回（保持 `[]` 数组结构）
-5. **写回后立即校验** JSON 合法：
+   - **禁止用 PowerShell `ConvertTo-Json` 写回**：当数组只剩 1 个元素时，`ConvertTo-Json` 默认输出单对象（丢数组括号），导致 tasks.json 变成 `{...}`，plugin `for..of` 崩溃 `tasks is not iterable`，所有会话的 MOA 不可用。要用 PowerShell 就用 `ConvertTo-Json -AsArray`
+   - **禁止用 `Set-Content -Encoding UTF8` 写 JSON**：会写 BOM，node JSON.parse 报 "Unexpected token ﻿"。用 Python `json.dump` 或 Write 工具写（无 BOM）
+5. **写回后立即校验** JSON 合法 + **必须是数组**：
    ```powershell
-   node -e "JSON.parse(require('fs').readFileSync(process.env.USERPROFILE + '/.config/opencode/moa/tasks.json','utf8')); console.log('JSON OK')"
+   node -e "const t=JSON.parse(require('fs').readFileSync(process.env.USERPROFILE + '/.config/opencode/moa/tasks.json','utf8')); if(!Array.isArray(t)) throw new Error('NOT ARRAY'); console.log('JSON OK, array len='+t.length)"
    ```
-   无 node 时用 Read 工具读回，确认是合法 JSON 数组
+   无 node 时用 Read 工具读回，确认是 `[...]` 数组（不是对象）
 6. **校验失败立即回滚**：用 `tasks.json.bak` 覆盖 `tasks.json`，重新校验
 7. 清理后**重启生效无需等待**--plugin 每次轮询前重新 loadTasks，删掉条目即不再处理
 
 **硬约束（违反即事故）**：
 - 只删 `done`，`pending`/`active` 绝不删--误删进行中任务会导致该 MOA 无法传话
 - 写回前必须备份；写回后必须校验，校验失败立即回滚
+- **tasks.json 必须是 `[...]` 数组**（不能是单对象）--写成对象会导致 plugin `tasks is not iterable` 崩溃，全部会话 MOA 失效
 - JSON 写坏会导致 plugin `loadTasks` 解析失败回退 `tasks=[]`，**全部任务丢失**
 - 历史方案文件保留在各自 watch_dir，不受清理影响
 
@@ -137,7 +140,8 @@ node "<skill目录>/scripts/deploy.js"
 
 | 现象 | 可能原因 | 处理 |
 |---|---|---|
-| 会话看不到 `moa_register` | plugin 未部署 / 旧会话未加载 | 运行 `deploy.js --check` 确认部署状态；已部署则重启 opencode（plugin 启动时才扫描一次）；确认全局 opencode.json plugin 数组已注册 moa-trigger.js |
+| 会话看不到 `moa_register` | plugin 未部署 / 旧会话未加载 / tasks.json 被写成对象 | 运行 `deploy.js --check` 确认部署状态；检查 `~/.config/opencode/moa/tasks.json` 必须是 `[...]` 数组（非数组则写回 `[]` 或备份恢复）；重启 opencode |
+| 日志报 `tasks is not iterable` | tasks.json 被 PowerShell `ConvertTo-Json` 写成单对象（数组只剩 1 个元素） | 修复 tasks.json 为 `[...]` 数组；清理时用 Write 工具或 `ConvertTo-Json -AsArray`；升级后的 plugin 已自动防御 |
 | 双方都注册了但不启动 | watch_dir 不一致 / 任务文件异常 | 核对两边 watch_dir；查看 `~/.config/opencode/moa/moa-trigger.log` |
 | 传话不达 | 对方会话已关闭 / notify 失败 | 确认对方项目开着；查日志 `notify 失败` |
 | 重复传话 | 锁未生效（旧版 plugin 还在跑） | 确认项目级旧 plugin 已移除；重启 |

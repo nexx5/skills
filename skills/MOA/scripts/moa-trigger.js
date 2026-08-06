@@ -38,8 +38,10 @@ export const MoaTrigger = async ({ client, directory }) => {
   }
   const loadTasks = () => {
     ensureDir()
-    try { tasks = JSON.parse(fs.readFileSync(TASKS_FILE, "utf8")) || [] }
-    catch (e) { tasks = [] }
+    try {
+      const parsed = JSON.parse(fs.readFileSync(TASKS_FILE, "utf8"))
+      tasks = Array.isArray(parsed) ? parsed : []   // 防御：文件被写成对象/非法时回退空数组，避免 for..of 崩溃
+    } catch (e) { tasks = [] }
   }
   const saveTasks = () => {
     ensureDir()
