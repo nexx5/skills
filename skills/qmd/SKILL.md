@@ -47,7 +47,7 @@ Windows 上安装后如果 `qmd` 命令无法运行，需同时修复 `qmd.cmd` 
 ```powershell
 # 1. 找到 npm 全局安装目录
 npm config get prefix
-# 输出示例：<NPM_PREFIX_DIR>
+# 输出示例：<NPM_PREFIX_DIR>（npm 全局安装目录，各系统不同）
 
 # 2. 确认 qmd.js 存在
 Test-Path "$env:APPDATA\npm\node_modules\@tobilu\qmd\dist\cli\qmd.js"

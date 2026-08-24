@@ -51,7 +51,7 @@ MAX_USES = int(os.getenv("CLOAK_MAX_USES", "50"))
 IDLE_TIMEOUT = int(os.getenv("CLOAK_IDLE_TIMEOUT", "300"))
 CLOSE_TIMEOUT = int(os.getenv("CLOAK_CLOSE_TIMEOUT", "10"))
 FETCH_TIMEOUT_MS = int(os.getenv("CLOAK_FETCH_TIMEOUT", "30000"))
-DEFAULT_PROXY = os.getenv("CLOAK_PROXY", "socks5://<PROXY_HOST>:<PROXY_PORT>")
+DEFAULT_PROXY = os.getenv("CLOAK_PROXY")
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -366,6 +366,12 @@ async def fetch_url(
 
     if proxy is None:
         proxy = DEFAULT_PROXY
+    if proxy is None:
+        raise RuntimeError(
+            "CLOAK_PROXY 未配置：请通过环境变量 CLOAK_PROXY 设置 SOCKS5 代理地址"
+            "（如 socks5://<PROXY_HOST>:<PROXY_PORT>），或用 --proxy 直接传入；"
+            "如需无代理直连，传 --proxy ''"
+        )
 
     timeout_ms = max(3000, min(int(timeout_ms), 120_000))
     logger.info(f"抓取: {url} (wait={wait_until}, proxy={proxy})")
