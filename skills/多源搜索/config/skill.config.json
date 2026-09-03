@@ -1,0 +1,40 @@
+{
+  "proxy": {
+    "primary": "socks5://<PROXY_HOST>:<PROXY_PORT>",
+    "fallback": ["socks5://<PROXY_HOST_2>:<PROXY_PORT_2>", "socks5://<PROXY_HOST_3>:<PROXY_PORT_3>"]
+  },
+  "searxng": {
+    "base_url": "http://<SEARXNG_HOST>:<SEARXNG_PORT>",
+    "search_endpoint": "http://<SEARXNG_HOST>:<SEARXNG_PORT>/search?q={query}&format=json&categories=general"
+  },
+  "tavily": {
+    "auth_scheme": "Bearer",
+    "api_keys": [
+      "<TAVILY_API_KEY>"
+    ]
+  },
+  "openalex": {
+    "mailto": "your-email@example.com"
+  },
+  "web_fetch_cmd": {
+    "ssh_user": "<SSH_USER>",
+    "ssh_host": "<SSH_HOST>",
+    "ssh_port": "<SSH_PORT>"
+  },
+  "cdp": {
+    "ports": [9222, 9223, 9224],
+    "edge": {
+      "port": 9222,
+      "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "profile": "Default"
+    },
+    "chrome": {
+      "port": 9223,
+      "path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "user_data_dir": "<CHROME_USER_DATA_DIR>"
+    }
+  },
+  "semantic_scholar": {
+    "api_key": null
+  }
+}

@@ -15,6 +15,10 @@
 运行方式：
     python scripts/cloak_fetch.py <url>
 
+配置：
+    默认代理从 config/skill.config.json 的 proxy.primary 读取（详见 SKILL.md 配置索引），
+    可用环境变量 CLOAK_PROXY 或 --proxy 参数覆盖。
+
 依赖：
     - Python: cloakbrowser
     - Node.js: defuddle (本地已安装)
@@ -51,7 +55,22 @@ MAX_USES = int(os.getenv("CLOAK_MAX_USES", "50"))
 IDLE_TIMEOUT = int(os.getenv("CLOAK_IDLE_TIMEOUT", "300"))
 CLOSE_TIMEOUT = int(os.getenv("CLOAK_CLOSE_TIMEOUT", "10"))
 FETCH_TIMEOUT_MS = int(os.getenv("CLOAK_FETCH_TIMEOUT", "30000"))
-DEFAULT_PROXY = os.getenv("CLOAK_PROXY")
+
+
+def _load_default_proxy() -> str | None:
+    """默认代理：CLOAK_PROXY 环境变量优先，否则读 config/skill.config.json 的 proxy.primary（配置真相源见 SKILL.md 配置索引）。"""
+    env = os.getenv("CLOAK_PROXY")
+    if env:
+        return env
+    config_path = os.path.join(os.path.dirname(__file__), "..", "config", "skill.config.json")
+    try:
+        with open(config_path, encoding="utf-8") as f:
+            return json.load(f).get("proxy", {}).get("primary")
+    except Exception:
+        return None
+
+
+DEFAULT_PROXY = _load_default_proxy()
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -366,12 +385,6 @@ async def fetch_url(
 
     if proxy is None:
         proxy = DEFAULT_PROXY
-    if proxy is None:
-        raise RuntimeError(
-            "CLOAK_PROXY 未配置：请通过环境变量 CLOAK_PROXY 设置 SOCKS5 代理地址"
-            "（如 socks5://<PROXY_HOST>:<PROXY_PORT>），或用 --proxy 直接传入；"
-            "如需无代理直连，传 --proxy ''"
-        )
 
     timeout_ms = max(3000, min(int(timeout_ms), 120_000))
     logger.info(f"抓取: {url} (wait={wait_until}, proxy={proxy})")

@@ -14,29 +14,45 @@ description: 统一多引擎搜索编排 skill。支持 Bing/Baidu/SearXNG/Tavil
 - 决定"调用哪个引擎、传什么参数、怎么合并结果、用哪条通道提取正文"
 - 不关心"为什么搜这个"、"结果怎么用"——那是 agent 的事
 
+## 配置索引
+
+本 skill 的所有环境/密钥/内网配置集中在 **`config/skill.config.json`**（本 SKILL.md 所在目录下）。**执行任何引擎调用或正文提取前，必须先 read 该文件，用实际值替换下方占位符。**
+
+占位符 `{{config.<路径>}}` 表示 `config/skill.config.json` 中对应 JSON 字段的值，例如 `{{config.proxy.primary}}` = 文件 `proxy.primary` 字段。
+
+| 占位符 | 含义 |
+|--------|------|
+| `{{config.proxy.primary}}` / `{{config.proxy.fallback}}` | SOCKS5 主/备代理地址 |
+| `{{config.searxng.base_url}}` / `{{config.searxng.search_endpoint}}` | SearXNG 自建实例地址与搜索端点 |
+| `{{config.tavily.api_keys}}` | Tavily API Key 列表（按数组顺序轮换） |
+| `{{config.openalex.mailto}}` | OpenAlex 礼貌配额邮箱 |
+| `{{config.web_fetch_cmd.ssh_user}}` / `ssh_host` / `ssh_port` | 远程提取 SSH 连接目标 |
+| `{{config.cdp.ports}}` / `edge.path` / `edge.profile` / `chrome.path` / `chrome.user_data_dir` | CDP 浏览器端口与本机路径 |
+| `{{config.semantic_scholar.api_key}}` | Semantic Scholar 可选 Key（null 表示未配置） |
+
 ## 代理基础设施
 
 所有搜索和提取渠道**共享同一套代理配置**。
 
-**可用代理**（按优先级排列）：
+**可用代理**（按优先级排列，见 config）：
 
 | 地址 | 协议 | 用途 |
 |------|------|------|
-| `socks5://<PROXY1>` | SOCKS5 | 主代理，实测最稳定 |
-| `socks5://<PROXY2>` | SOCKS5 | 备用 1 |
-| `socks5://<PROXY3>` | SOCKS5 | 备用 2 |
+| `{{config.proxy.primary}}` | SOCKS5 | 主代理，实测最稳定 |
+| `{{config.proxy.fallback[0]}}` | SOCKS5 | 备用 1 |
+| `{{config.proxy.fallback[1]}}` | SOCKS5 | 备用 2 |
 
 > 仅提供 SOCKS5，不假设 HTTP 代理可用。
 
 **使用方式**：
 
-- 直调 HTTP（webfetch/SearXNG/Tavily）：opencode 内置 webfetch 通常自动走系统代理；如未走，通过环境变量 `ALL_PROXY=socks5://<PROXY1>` 强制
-- Python 脚本/requests：`pip install pysocks` 后设置 `proxies={"http": "socks5://<PROXY1>", "https": "socks5://<PROXY1>"}`
-- curl：`curl.exe -x socks5://<PROXY1> <url>`
-- CDP 浏览器：启动时传入 `--proxy-server=socks5://<PROXY1>`
-- CloakBrowser 直调：脚本内自动读取 `CLOAK_PROXY` 环境变量或默认走 `socks5://<PROXY1>`
+- 直调 HTTP（webfetch/SearXNG/Tavily）：opencode 内置 webfetch 通常自动走系统代理；如未走，通过环境变量 `ALL_PROXY={{config.proxy.primary}}` 强制
+- Python 脚本/requests：`pip install pysocks` 后设置 `proxies={"http": "{{config.proxy.primary}}", "https": "{{config.proxy.primary}}"}`
+- curl：`curl.exe -x {{config.proxy.primary}} <url>`
+- CDP 浏览器：启动时传入 `--proxy-server={{config.proxy.primary}}`
+- CloakBrowser 直调：脚本内自动读取 `CLOAK_PROXY` 环境变量或默认读取 config 的 `{{config.proxy.primary}}`
 
-> 如 4040 不可用，依次尝试 4547、4545。
+> 如主代理不可用，依次尝试 `{{config.proxy.fallback}}`。
 
 ## 可用引擎
 
@@ -70,34 +86,37 @@ description: 统一多引擎搜索编排 skill。支持 Bing/Baidu/SearXNG/Tavil
 
 ## 引擎配置
 
-### SearXNG（直调）
+### SearXNG（直调，不要使用代理）
 
 ```
-URL: http://<YOUR_SEARXNG_HOST>:<PORT>/
+URL: {{config.searxng.base_url}}
 调用方式：webfetch 工具
-端点：http://<YOUR_SEARXNG_HOST>:<PORT>/search?q={query}&format=json&categories=general
+端点：{{config.searxng.search_endpoint}}
 返回格式：[{title, url, content}]
 ```
 
 ### Tavily（直调）
 
 ```
-API Keys（轮换使用，一个耗尽/限流后自动换下一个）：
-  1. <YOUR_TAVILY_API_KEY_1>
-  2. <YOUR_TAVILY_API_KEY_2>
+API Keys（轮换使用，见 config/skill.config.json 的 tavily.api_keys，按数组顺序轮换）：
+  1. {{config.tavily.api_keys[0]}}
+  2. {{config.tavily.api_keys[1]}}
+  3. {{config.tavily.api_keys[2]}}
+  4. {{config.tavily.api_keys[3]}}
+  5. {{config.tavily.api_keys[4]}}
 
 调用方式：webfetch 工具（POST）
 端点：https://api.tavily.com/search
-请求头：Authorization: Bearer <当前key>
+请求头：Authorization: Bearer <当前key>（按轮换规则取当前 key）
        Content-Type: application/json
 请求体：{query: "{query}", search_depth: "advanced", max_results: 10}
 返回格式：{query, follow_up_questions, answer, images, results: [{title, url, content, score, raw_content}]}
 ```
 
 **轮换规则**：
-- 首次调用使用 Key 1
-- 收到 rate limit / quota exceeded / 401 → 切换至 Key 2，重试一次
-- Key 2 也失败 → 跳过 Tavily，记录到日志
+- 首次调用使用 `api_keys[0]`
+- 收到 rate limit / quota exceeded / 401 → 切换至下一个 Key，重试一次
+- 所有 Key 都失败 → 跳过 Tavily，记录到日志
 
 > Tavily 返回的 content 字段包含提取的正文片段，raw_content 包含完整正文，无需二次抓取。search_depth: basic | advanced，advanced 可获取更完整内容。
 
@@ -150,7 +169,7 @@ API Keys（轮换使用，一个耗尽/限流后自动换下一个）：
 端点：https://api.openalex.org/works?search={query}&per-page=10&sort=relevance_score:desc
 调用方式：webfetch 工具（format: text）
 返回格式：JSON
-限流：无 Key（建议加 mailto 参数提高礼貌配额：&mailto=research@local）
+限流：无 Key（建议加 mailto 参数提高礼貌配额：&mailto={{config.openalex.mailto}}）
 ```
 
 **查询参数**：
@@ -271,10 +290,10 @@ web-fetch.cmd -m <url>
 内部实现：
 
 ```batch
-@ssh <USER>@<YOUR_SSH_SERVER> -p <PORT> defuddle parse %*
+@ssh {{config.web_fetch_cmd.ssh_user}}@{{config.web_fetch_cmd.ssh_host}} -p {{config.web_fetch_cmd.ssh_port}} defuddle parse %*
 ```
 
-- 通过 SSH 连接海外服务器 `<YOUR_SSH_SERVER>:<PORT>`
+- 通过 SSH 连接海外服务器 `{{config.web_fetch_cmd.ssh_host}}:{{config.web_fetch_cmd.ssh_port}}`
 - 远程执行 `defuddle parse -m <url>`，将网页解析为干净 Markdown 返回
 - **优势**：海外服务器直连目标站，天然翻墙；defuddle 提取质量高
 - **限制**：纯静态提取，不能处理 JS 渲染页；依赖 SSH 连接
@@ -289,7 +308,7 @@ python scripts/cloak_fetch.py <url>
 **CLI 参数**：
 
 ```
---proxy        代理地址（默认 socks5://<PROXY1>）
+--proxy        代理地址（默认 {{config.proxy.primary}}，脚本自动从 config 读取）
 --wait-until   等待策略：load / domcontentloaded / networkidle / commit（默认 networkidle）
 --timeout      超时毫秒（默认 30000）
 --json         以 JSON 格式输出
@@ -316,25 +335,25 @@ python scripts/cloak_fetch.py <url>
 ### 渠道 4：CDP 真实浏览器（本地）
 
 直接连接已启动的真实浏览器实例，通过 Chrome DevTools Protocol 操作。
-
+可用CDP端口：{{config.cdp.ports[0]}}（优先）、{{config.cdp.ports[1]}}、{{config.cdp.ports[2]}} 。
 **启动脚本与端口检查**
 
 使用前先检查端口是否已监听，未监听则启动浏览器：
 
 ```powershell
-# Edge（9020，智能路由，国内直连+按需翻墙）
-$edgePort = 9020
+# Edge（{{config.cdp.edge.port}}，智能路由，国内直连+按需翻墙）
+$edgePort = {{config.cdp.edge.port}}
 $edgeListening = Test-NetConnection -ComputerName <LOCAL_HOST> -Port $edgePort -WarningAction SilentlyContinue | Select-Object -ExpandProperty TcpTestSucceeded
 if (-not $edgeListening) {
-    Start-Process -FilePath "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" -ArgumentList "--remote-debugging-port=$edgePort","--profile-directory=Default" -WindowStyle Hidden
+    Start-Process -FilePath "{{config.cdp.edge.path}}" -ArgumentList "--remote-debugging-port=$edgePort","--profile-directory={{config.cdp.edge.profile}}" -WindowStyle Hidden
     Start-Sleep -Seconds 3
 }
 
-# Chrome（9021，全局翻墙）
-$chromePort = 9021
+# Chrome（{{config.cdp.chrome.port}}，全局翻墙）
+$chromePort = {{config.cdp.chrome.port}}
 $chromeListening = Test-NetConnection -ComputerName <LOCAL_HOST> -Port $chromePort -WarningAction SilentlyContinue | Select-Object -ExpandProperty TcpTestSucceeded
 if (-not $chromeListening) {
-    Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" -ArgumentList "--user-data-dir=<CHROME_USER_DATA_DIR>","--remote-debugging-port=$chromePort" -WindowStyle Hidden
+    Start-Process -FilePath "{{config.cdp.chrome.path}}" -ArgumentList "--user-data-dir={{config.cdp.chrome.user_data_dir}}","--remote-debugging-port=$chromePort" -WindowStyle Hidden
     Start-Sleep -Seconds 3
 }
 ```
@@ -434,7 +453,7 @@ with sync_playwright() as p:
 
 ```python
 import json
-response = webfetch("http://<YOUR_SEARXNG_HOST>:<PORT>/search?q={query}&format=json&categories=general", format=text)
+response = webfetch(f"{{config.searxng.base_url}}/search?q={query}&format=json&categories=general", format=text)
 data = json.loads(response)
 results = data["results"]
 ```
@@ -443,7 +462,7 @@ results = data["results"]
 
 ```python
 response = webfetch("https://api.tavily.com/search", format=text)
-# POST headers: {"Authorization": "Bearer <key>", "Content-Type": "application/json"}
+# POST headers: {"Authorization": "Bearer {{config.tavily.api_keys[0]}}", "Content-Type": "application/json"}   # 按轮换规则取当前 key
 # POST body: {"query": "{query}", "search_depth": "advanced", "max_results": 10}
 ```
 
