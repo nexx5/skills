@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="poster-vintage">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek-V4-Flash 更新</title>
+<style>
+/* ===== poster-vintage 色板 ===== */
+:root[data-theme="poster-vintage"] {
+  --color-primary: #7A1A1A;
+  --color-primary-light: #A04040;
+  --color-primary-dark: #5A1010;
+  --color-accent: #8B6914;
+  --color-accent-light: #B8941F;
+  --color-success: #2E6B2E;
+  --color-warning: #8B6914;
+  --color-danger: #7A1A1A;
+  --color-info: #4A5A6A;
+  --color-text: #2C1810;
+  --color-text-secondary: #5C4030;
+  --color-text-muted: #8B7355;
+  --color-bg: #F3E9D4;
+  --color-bg-soft: #EDE0C8;
+  --color-bg-muted: #E2D2B6;
+  --color-border: #5C3A20;
+  --radius: 3px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.1);
+  --shadow-md: 0 2px 6px rgba(0,0,0,.15);
+  --border-style: double;
+  --border-width: 3px;
+  --border-double-gap: 2px;
+  --color-leader: #A09080;
+  --color-icon: #2C1810;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+}
+
+/* ===== 排版 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root[data-theme="poster-vintage"] {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+[data-theme="poster-vintage"] body {
+  font-family: 'Noto Serif SC', 'SimSun', 'STSong', 'Songti SC', Georgia, serif;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+[data-theme="poster-vintage"] h1,
+[data-theme="poster-vintage"] h2,
+[data-theme="poster-vintage"] h3,
+[data-theme="poster-vintage"] h4,
+[data-theme="poster-vintage"] h5,
+[data-theme="poster-vintage"] h6 {
+  font-family: 'Noto Serif SC', 'SimSun', 'STSong', Georgia, 'Times New Roman', serif;
+  font-weight: 900;
+}
+
+[data-theme="poster-vintage"] h1 {
+  font-size: 2.8em;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  margin: 0.1em 0 0.15em;
+}
+
+[data-theme="poster-vintage"] h2 {
+  font-size: 1.6em;
+  line-height: 1.25;
+  color: var(--color-primary);
+  margin: 0.8em 0 0.4em;
+}
+
+[data-theme="poster-vintage"] h3 {
+  font-size: 1.2em;
+  color: var(--color-primary);
+}
+
+/* ===== 海报布局 ===== */
+.report-body.poster {
+  max-width: 72em;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-xl);
+  display: grid;
+  grid-template-columns: 1fr 18em;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-md);
+}
+
+.poster-header {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding-bottom: var(--space-md);
+  border-bottom: var(--border-width) var(--border-style) var(--color-border);
+  margin-bottom: var(--space-sm);
+}
+
+.poster-header h1 {
+  margin: 0;
+  font-size: 2.8em;
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.poster-header .poster-subtitle {
+  font-size: 1.3em;
+  color: var(--color-primary);
+  margin-top: 0.2em;
+  font-weight: 700;
+}
+
+.poster-header .poster-lead {
+  font-size: 0.95em;
+  color: var(--color-text-secondary);
+  margin-top: 0.5em;
+  line-height: 1.5;
+  max-width: 48em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.poster-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.poster-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 860px) {
+  .report-body.poster {
+    grid-template-columns: 1fr;
+  }
+  .poster-sidebar {
+    order: -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .poster-sidebar > * {
+    flex: 1 1 45%;
+  }
+}
+
+@media (max-width: 520px) {
+  .report-body.poster {
+    padding: var(--space-md) var(--space-sm);
+  }
+  .poster-header h1 {
+    font-size: 1.8em;
+  }
+  .poster-sidebar {
+    flex-direction: column;
+  }
+  .poster-sidebar > * {
+    flex: 1 1 100%;
+  }
+}
+
+/* ===== poster-card ===== */
+.poster-card {
+  background: var(--color-bg);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  break-inside: avoid;
+}
+
+.poster-card__header {
+  background: var(--color-primary);
+  color: #FDF8F0;
+  font-size: 1em;
+  font-weight: 700;
+  padding: 0.4em 0.9em;
+  letter-spacing: 0.06em;
+  display: inline-block;
+}
+
+.poster-card__body {
+  padding: 0.6em 0.9em 0.9em;
+}
+
+.poster-card[data-variant="plain"] .poster-card__body {
+  padding-top: 0.9em;
+}
+
+/* ===== rank-list ===== */
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--space-sm) 0;
+}
+
+.rank-list__item {
+  display: flex;
+  align-items: baseline;
+  padding: 0.45em 0;
+  border-bottom: 1px dotted var(--color-leader);
+  font-size: 1em;
+}
+
+.rank-list__item:last-child {
+  border-bottom: none;
+}
+
+.rank-list__icon {
+  flex-shrink: 0;
+  width: 1.6em;
+  height: 1.6em;
+  color: var(--color-icon);
+  margin-right: 0.6em;
+}
+
+.rank-list__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.rank-list__label {
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.rank-list__leaders {
+  flex: 1;
+  border-bottom: 2px dotted var(--color-leader);
+  margin: 0 0.5em;
+  position: relative;
+  top: -0.15em;
+}
+
+.rank-list__value {
+  flex-shrink: 0;
+  font-size: 1.5em;
+  font-weight: 800;
+  color: var(--color-primary);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1;
+}
+
+@media (max-width: 520px) {
+  .rank-list__value {
+    font-size: 1.2em;
+  }
+  .rank-list__icon {
+    width: 1.3em;
+    height: 1.3em;
+  }
+}
+
+/* ===== poster-sidebar-item ===== */
+.poster-sidebar-item {
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  break-inside: avoid;
+}
+
+.poster-sidebar-item__header {
+  background: var(--color-primary);
+  color: #FDF8F0;
+  font-size: 0.85em;
+  font-weight: 700;
+  padding: 0.35em 0.7em;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.poster-sidebar-item__image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--color-bg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.poster-sidebar-item__body {
+  padding: 0.6em 0.7em 0.8em;
+}
+
+.poster-sidebar-item__title {
+  margin: 0 0 0.4em;
+  font-size: 1em;
+  color: var(--color-primary);
+  line-height: 1.3;
+}
+
+.poster-sidebar-item__body p {
+  margin: 0;
+  font-size: 0.85em;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* ===== poster-divider ===== */
+.poster-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.3em 0;
+}
+
+.poster-divider::before,
+.poster-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+  opacity: 0.5;
+}
+
+.poster-divider__star {
+  font-size: 0.7em;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+/* ===== poster-icon-row ===== */
+.poster-icon-row {
+  display: flex;
+  gap: 0.7em;
+  align-items: flex-start;
+  padding: 0.3em 0;
+}
+
+.poster-icon-row__icon {
+  flex-shrink: 0;
+  width: 2.4em;
+  height: 2.4em;
+  color: var(--color-icon);
+}
+
+.poster-icon-row__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.poster-icon-row__content {
+  flex: 1;
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.poster-icon-row__content ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.poster-icon-row__content li {
+  margin-bottom: 0.2em;
+}
+
+/* ===== poster-alert ===== */
+.poster-alert {
+  background: var(--color-bg);
+  border: var(--border-width) var(--border-style) var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  break-inside: avoid;
+}
+
+.poster-alert__icon {
+  float: left;
+  width: 2.8em;
+  height: 2.8em;
+  color: var(--color-primary);
+  margin-right: 0.6em;
+  margin-top: 0.1em;
+}
+
+.poster-alert__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.poster-alert__content p {
+  font-size: 0.95em;
+  color: var(--color-primary);
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.poster-alert__content p::before {
+  content: "";
+}
+
+/* ===== Notes text ===== */
+.poster-card__body .notes {
+  font-size: 0.82em;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  padding: 0.3em 0;
+}
+
+.poster-card__body .notes strong {
+  color: var(--color-text-secondary);
+}
+</style>
+</head>
+<body>
+<div class="report-body poster">
+  <!-- 通栏标题 -->
+  <header class="poster-header">
+    <h1>DeepSeek-V4-Flash 更新</h1>
+    <div class="poster-subtitle">DeepSeek-V4-Flash 正式版 API 上线公测</div>
+    <div class="poster-lead">Agent 能力大幅增强，基准测试远超 V4-Pro-Preview。正式版 V4-Flash 原生支持 Responses API 格式，并针对性适配 Codex。</div>
+  </header>
+
+  <!-- 主内容 -->
+  <div class="poster-main">
+    <!-- 排行榜 -->
+    <div class="poster-card">
+      <div class="poster-card__header">基准测试成绩（越高越好）</div>
+      <div class="poster-card__body">
+        <div class="rank-list">
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10l4 3-4 3v-2h-2v-2h2v-1zm6 4h6v-1.5h-6V12zm0-3h6V9.5h-6V9z"/></svg></span>
+            <span class="rank-list__label">Terminal Bench 2.1</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">82.7</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6z"/></svg></span>
+            <span class="rank-list__label">NL2Repo</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">54.2</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v5c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5zm0 2.2L19 8v4c0 4.4-3 8.6-7 9.8-4-1.2-7-5.4-7-9.8V8l7-3.8z"/></svg></span>
+            <span class="rank-list__label">Cybergym</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">76.7</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg></span>
+            <span class="rank-list__label">DeepSWE</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">54.4</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.5 1.9 4.5 4.3 4.9.5 1.7 1.8 3.1 3.5 3.7V19H7v2h10v-2h-3.8v-3.3c1.7-.6 3-2 3.5-3.7C19.1 12.5 21 10.5 21 8V7c0-1.1-.9-2-2-2zM7 8V7h2v4.1C6.4 10.6 5 9.1 5 8V7h2zm12 1c0 1.1-1.4 2.6-4 2.9V7h2V7h2z"/></svg></span>
+            <span class="rank-list__label">Toolathlon verified</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">70.3</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.9V17h2V9L12 3zm0 13.3l-2.9-1.6L12 21l2.9-2.3L12 16.3zM5 13.4V19l7 4 7-4v-5.6l-7 3.7-7-3.7z"/></svg></span>
+            <span class="rank-list__label">Agent Last Exam</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">25.2</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 012 2c0 .7-.4 1.4-1 1.7V7h3v2h-1v3h1v2h-1v5h1v2h-2v-1H9v1H7v-2h1v-5H7v-2h1v-3H7V7h3V5.7c-.6-.3-1-1-1-1.7a2 2 0 012-2zm-3 7H7v3h2V9zm6 0h-2v3h2V9zM7 15H5v5h2v-5zm10 0h-2v5h2v-5z"/></svg></span>
+            <span class="rank-list__label">Automation Bench (Public)</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">25.1</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4zm12 16H6v-8l2.5 1.5L11 16v4h-2v-2h2v-2h2v2h2v-2h2v4z"/></svg></span>
+            <span class="rank-list__label">DSBench-FullStack</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">68.7</span>
+          </div>
+          <div class="rank-list__item">
+            <span class="rank-list__icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 6l-3.75 5.5-2.25-3L3 19h2l4.5-6.5 2.75 4H21l-5-8-2 1.5z"/></svg></span>
+            <span class="rank-list__label">DSBench-Hard</span>
+            <span class="rank-list__leaders"></span>
+            <span class="rank-list__value">59.6</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 测试说明 -->
+    <div class="poster-card">
+      <div class="poster-card__header">测试说明</div>
+      <div class="poster-card__body">
+        <div class="poster-icon-row">
+          <span class="poster-icon-row__icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm-1 4.7V17H9v-1.3c-.6-.3-1-.9-1-1.7 0-1.1.9-2 2-2s2 .9 2 2c0 .8-.4 1.4-1 1.7zM13 9V3.5L18.5 9H13z"/></svg>
+          </span>
+          <div class="poster-icon-row__content">
+            <div class="notes">
+              <strong>注1：</strong>对于公开基准测试集中的 Code Agent 任务，正式版 DeepSeek-V4-Flash 使用 DeepSeek Harness 极简模式（即将发布）作为框架进行测试，并使用 max 档位，topp=0.95，temperature=1.0。
+              <br><strong>注2：</strong>DSBench-FullStack 是内部使用的全栈开发测试集，DSBench-Hard 是内部使用的 Coding Agent 难题测试集。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 接口与兼容 -->
+    <div class="poster-card">
+      <div class="poster-card__header">接口与兼容</div>
+      <div class="poster-card__body">
+        <div class="poster-icon-row">
+          <span class="poster-icon-row__icon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 012 2c0 .7-.4 1.4-1 1.7V7h3v2h-1v3h1v2h-1v5h1v2h-2v-1H9v1H7v-2h1v-5H7v-2h1v-3H7V7h3V5.7c-.6-.3-1-1-1-1.7a2 2 0 012-2zm-3 7H7v3h2V9zm6 0h-2v3h2V9zM7 15H5v5h2v-5zm10 0h-2v5h2v-5z"/></svg>
+          </span>
+          <div class="poster-icon-row__content">
+            <ul>
+              <li>正式版 V4-Flash 原生支持 Responses API 格式</li>
+              <li>并针对性适配 Codex，具体配置方法请参考文档</li>
+              <li>DeepSeek-V4-Flash-0731 的模型结构、尺寸与 DeepSeek-V4-Flash-preview 保持一致，仅重新进行了后训练</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 重要提示 -->
+    <div class="poster-alert">
+      <div class="poster-card__header">重要提示</div>
+      <div class="poster-card__body">
+        <div class="poster-alert__icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z"/></svg>
+        </div>
+        <div class="poster-alert__content">
+          <p>注意：本次仅升级了 DeepSeek-V4-Flash 的 API 接口，DeepSeek-V4-Pro API 及 APP/WEB 端模型未做更改。</p>
+          <p style="margin-top:0.5em">DeepSeek-V4-Pro 正式版将会尽快发布。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 侧栏 -->
+  <aside class="poster-sidebar">
+    <div class="poster-sidebar-item">
+      <div class="poster-sidebar-item__header">社论 · 快评</div>
+      <div class="poster-sidebar-item__image">
+        <svg viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;opacity:0.35">
+          <path d="M10 70 Q30 20 50 50 Q60 35 70 45 Q80 25 90 50 Q100 30 110 60 L110 90 L10 90Z" fill="#5C3A20"/>
+          <path d="M20 75 Q40 40 55 60 Q65 45 75 55 Q85 40 95 65 L95 90 L20 90Z" fill="#8B7355" opacity="0.5"/>
+          <circle cx="30" cy="30" r="4" fill="#5C3A20" opacity="0.3"/>
+          <circle cx="85" cy="25" r="3" fill="#5C3A20" opacity="0.2"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="poster-sidebar-item">
+      <div class="poster-sidebar-item__body">
+        <h4 class="poster-sidebar-item__title">更新聚焦 Agent 能力</h4>
+        <p>在多轮规划、工具调用和复杂任务执行上表现显著提升，远超预览版。</p>
+      </div>
+      <div class="poster-divider"><span class="poster-divider__star">★</span></div>
+    </div>
+
+    <div class="poster-sidebar-item">
+      <div class="poster-sidebar-item__body">
+        <h4 class="poster-sidebar-item__title">正式版对 Codex 更友好</h4>
+        <p>针对性适配 Codex，开发体验更顺滑，集成效率更高。</p>
+      </div>
+      <div class="poster-divider"><span class="poster-divider__star">★</span></div>
+    </div>
+
+    <div class="poster-sidebar-item">
+      <div class="poster-sidebar-item__body">
+        <h4 class="poster-sidebar-item__title">本次升级仅涉及 V4-Flash API</h4>
+        <p>接口升级，稳定可靠，不影响 V4-Pro 的现有服务与体验。</p>
+      </div>
+    </div>
+
+    <div class="poster-sidebar-item">
+      <div class="poster-sidebar-item__image">
+        <svg viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;opacity:0.3">
+          <path d="M10 70 Q30 50 60 55 Q90 60 110 40 L110 75 Q90 80 60 75 Q30 70 10 75Z" fill="#5C3A20" opacity="0.3"/>
+          <path d="M55 20 L60 55 L65 20 L60 30Z" fill="#5C3A20" opacity="0.4"/>
+          <path d="M50 25 L60 50 L70 25 L60 35Z" fill="#8B7355" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+  </aside>
+</div>
+</body>
+</html>

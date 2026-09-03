@@ -1,323 +1,250 @@
 ---
 name: html-report
-description: 智能HTML报告渲染引擎。支持 research/editorial 双模式，输入自然 Markdown，自动进行可选结构增强、语义分块、组件匹配，输出单文件自包含 HTML。适合调研报告、趋势解读、知识长文、公众号风格文章。
-trigger: 用户需要将 Markdown 报告/文章渲染成 HTML，或要求视觉化、叙事化、杂志风、公众号长图文风格的报告。
+description: 智能HTML报告渲染引擎。输入为自然Markdown内容，引擎自动分析内容结构、识别可视化模式、匹配叙事组件，输出单文件自包含HTML。支持20种原子组件、SVG流程图/数据图表、5套色板、暗色模式、海报布局。当需要生成HTML报告/文档/页面/海报时触发。
 ---
 
 # html-report
 
-智能 HTML 报告渲染引擎，支持两种工作模式：
-
-- **research 模式**：适合调研、审计、证据链报告。使用 timeline/chain/gap-box/step-card/chart/diagram 等研究组件。
-- **editorial 模式**：适合趋势解读、知识长文、公众号风格文章。使用 hero-cover/section-hero/card/comparison/highlight/quote 等编辑式组件。
+智能HTML报告渲染引擎。
 
 ## 核心设计
 
 ```
-agent 输入：自然 Markdown + 参数
+agent输入：自然Markdown（标题、段落、列表、表格、引用、代码块）
     ↓
-Step 0：意图解析（mode / theme / density）
+skill执行：
+  1. 分块（按标题/段落/表格/列表切分内容单元）
+  2. 模式识别（分析每个内容单元的结构特征）
+  3. 组件匹配（识别到的模式 → 对应可视化组件）
+  4. 渲染（组件HTML / 普通Markdown HTML）
+  5. 组装（合并为完整HTML骨架 + 内联CSS + 暗色模式）
     ↓
-Step 1：结构增强预检（标记需结构优化的章节）
-    ↓
-Step 2（可选）：结构增强（仅 editorial + narrative=true，形式转换不补内容）
-    ↓
-Step 3：语义分块（按标题/段落/表格/列表/引用切分）
-    ↓
-Step 4：语义识别（这段内容想表达什么）
-    ↓
-Step 5：组件选择（语义 → 组件 → 变体）
-    ↓
-Step 6：渲染（读取 themes.md / components.md，注入 CSS）
-    ↓
-Step 7：质量检查（工程检查）
-    ↓
-输出：单文件自包含 HTML
+输出：单文件自包含HTML（零外部依赖，file://可直接打开）
 ```
 
-**agent 不写任何组件标记。** 所有结构分析、组件选择、视觉决策由 skill 完成。
+**agent不写任何标记、不知道任何组件。** 所有结构分析和可视化决策由skill完成。
 
-## 职责边界
+## 输入
 
-html-report 只负责把已有 Markdown 渲染为 HTML。禁止承担以下职责：
+- **content**：Markdown格式的报告正文（纯内容，无组件标记）
+- **theme**：blue-orange / purple-green / warm-paper / vintage-tech / poster-vintage（默认blue-orange）
+- **layout**：article（默认，单栏文章）/ tufte（边栏学术）/ poster（复古海报，仅 poster-vintage 主题）
+- **title**：报告标题
 
-- 禁止读取调研项目资产来决定报告内容
-- 禁止选择报告业务模板
-- 禁止判断用户报告意图
-- 禁止生成报告正文
-- 禁止补造 raw、采录、分析或知识包
-- **禁止做内容改写**（补讲解、补事实、补前因后果）——这是报告 agent 的职责
+## 渲染流程（执行指令）
 
-## 输入参数
+### Step 1：内容分块
 
-| 参数 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| `content` | string | 必填 | Markdown 格式正文 |
-| `title` | string | 自动提取 | 报告标题 |
-| `mode` | string | `research` | `research` / `editorial` |
-| `theme` | string | `editorial-warm`（editorial）/ `blue-orange`（research） | 主题 |
-| `narrative` | boolean | `true`（editorial）/ `false`（research） | 是否启用结构增强 |
-| `density` | string | `normal` | `low` / `normal` / `high`，控制视觉密度 |
-| `enable_confidence_badge` | boolean | `false` | 是否渲染置信度徽章。仅当显式传入 true 或 Markdown 已含置信度标记时渲染 |
-
-## 渲染流程
-
-### Step 0：意图解析
-
-根据 `mode` 决定渲染策略：
-
-- `mode=research`：使用研究/审计组件（timeline、chain--evidence、gap-box、step-card、chart、diagram 等），不启用结构增强。
-- `mode=editorial`：使用编辑式组件（hero-cover、section-hero、card、comparison、highlight、quote 等），默认启用结构增强。
-
-### Step 1：结构增强预检
-
-在进入结构增强前，对每个章节块逐段做结构评估，标记需要结构优化的段落。**此步骤在 editorial + narrative=true 时为必做**，research 模式可跳过。
-
-**评估维度**：
-
-| 维度 | 检查问题 | 不达标信号 |
-|---|---|---|
-| 结构完整性 | 章节是否有引导句和收束句？ | 只有一句话的 H3、纯 bullet 无过渡句 |
-| 信息密度 | 是否高密度 bullet 堆积？ | 连续 3+ 个 bullet 项无连接段落、纯名词短语罗列 |
-| 组件适配 | bullet 适合组件化吗？ | 可识别为 list/comparison/highlight 等组件的结构 |
-
-**标记规则**：
-- 结构不完整或信息密度过高 → 标记该段落为 `needs-enhance`，进入 Step 2 强制结构增强。
-- 结构完整 → 标记为 `ok`，Step 2 可跳过。
-- 标记结果随章节块一起传递到 Step 2。
-
-### Step 2：结构增强（可选，editorial + narrative=true）
-
-当 `narrative=true` 时，对源 Markdown 做**形式转换**（不是内容改写）：
-
-1. 把密集 bullet list 改写成 1-2 段连贯文字，保留关键数据、来源、引用。
-2. 识别适合组件化的结构并保留为语义块：
-   - 两个对照的列表/表格 → 保留为对比块
-   - 连续步骤/因果链 → 保留为列表/链式块
-   - 数字指标 → 保留为高亮块
-   - 引用/金句 → 保留为引用块
-3. 不增删事实，不编造数据，改写后内容可溯源。
-
-**安全规则（关键）**：
-
-- bullet→段落时，只做**形式转换**：用句号/逗号替换 bullet 符号，保留原文用词和语序。
-- **不得增删任何事实、数据、来源。**
-- **不得补讲解性文字**——这是内容改写，属于报告 agent 职责。
-- 如果原文是提纲，skill 的输出就是"形式转换后的提纲"——不负责讲清楚，只负责结构清晰。
-- 保留所有数字、百分比、金额、时间、来源。
-- 不替换专业术语，不加入原文没有的观点。
-
-### Step 3：语义分块
-
-将 Markdown 切分为独立内容单元：
-
-- **封面块**：文档开头到第一个 H2 之前的内容
-- **章节块**：每个 H2 标题及其后续内容直到下一个 H2
+将Markdown正文切分为独立的内容单元：
+- **章节块**：以 `#`/`##`/`###` 开头的标题及其后续段落，直到下一个同级/更高级标题
 - **表格块**：连续的 `|` 行
-- **列表块**：连续的 `-` / `*` / `1.` / `i.` 行
+- **列表块**：连续的 `-` / `*` / `1.` 行
 - **引用块**：连续的 `>` 行
+- **代码块**：``` 包裹的块
 - **独立段落**：单个 `<p>`
 
-### Step 4：语义识别
+### Step 2：模式识别
 
-对每个内容单元，按以下优先级判断语义意图：
+对每个内容单元，按以下优先级检查是否匹配组件模式：
 
-| 语义 | 判断依据 |
-|---|---|
-| 封面 | 文档开头、包含 H1 或标题参数 |
-| 章节入口 | H2 标题 |
-| 子主题/概念 | H3 标题 + 后续段落/列表 |
-| 对比 | 表格 2-3 列含 A/B、段落含"vs/对比/相比"、成对列表 |
-| 冲突 | 含"争议/矛盾/冲突/分歧"或"立场A/立场B" |
-| 步骤/因果链 | 有序列表、含"导致/从而/于是/→"、标题含"流程/闭环/链条" |
-| 数据/结论 | 大量数字、百分比、结论性语句 |
-| 引用/金句 | blockquote、短句强调 |
-| 缺口/盲区 | 含"待补/缺口/盲区/未验证/假设/局限性" |
-| 时间线 | 列表项以日期/年份开头 |
-| 概念讲解 | 段落结构为三段式："痛点/是什么/怎么工作"或类似变体 |
-
-### Step 5：组件选择
-
-先按语义选组件，再按语义角色和位置选变体：
-
-```
-语义 → 组件 → 变体
-
-封面                → hero-cover
-H2 章节             → section-hero + section-badge
-H3 子主题           → card
-  ├─ 定义/核心/能力/价值/优势/案例 → card--accent
-  ├─ 局限/风险/挑战/反面         → card--secondary
-  ├─ 注意/提示/总结              → card--top-accent
-  ├─ 普通补充说明                → card--plain
-  └─ 概念讲解三段式               → card--concept
-
-对比                → comparison
-  ├─ 普通两方对照    → comparison--contrast
-  └─ 争议/冲突       → comparison--conflict
-
-列表                → list
-  ├─ 普通并列        → list--bullet
-  ├─ 行动步骤        → list--decimal
-  ├─ 叙事要点/步骤   → list--roman
-  └─ 因果递进        → list--chain
-
-数据/结论            → highlight
-  ├─ 多个指标        → highlight--kpi
-  ├─ 单点大数据      → highlight--stat
-  └─ 结论重音        → highlight--closing
-
-引用                → quote
-  ├─ 短金句          → quote--pullquote
-  └─ 长引用/证据     → quote--block
-
-来源                → source-footer
-table              → table（加 .table-wrap）
-时间序列            → timeline
-证据推理            → chain--evidence
-因果递进            → chain--process
-缺口/盲区           → gap-box
-置信度              → badge-confidence（仅 enable_confidence_badge=true 时）
-步骤流程            → step-card
-数据图表            → chart
-流程图/架构图       → diagram
+#### P1. 时间线模式
+**触发条件**：列表项以日期/年份/时间（如"2024-01"、"2023年"、"Q1"）开头，后面跟事件描述
+**特征**：连续3+个时间序列条目，有时间递进关系
+**示例**：
+```markdown
+- 2023年：纯文本时代，LLM输出Markdown
+- 2024年：模板美化时代，html-anything出现
+- 2025年：交互式探索时代，Quarto支持自包含HTML
+- 2026年：领域原生时代，需求清晰化
 ```
 
-### Step 6：渲染
+#### P2. 对比模式
+**触发条件**：
+- 表格只有2-3列，且表头暗示对比（如"维度/A/B"、"特性/方案1/方案2"）
+- 段落中出现 "vs"、"对比"、"A vs B"、"相比" 等关键词
+- 列表中有明确的 "优势/短板"、"优点/缺点" 成对出现
+**特征**：并列展示两个对象的差异
 
-1. 从 `references/themes.md` 读取选中主题的 CSS 变量。
-2. 从 `references/components.md` 读取实际用到的组件 CSS。
-3. 组装 HTML 骨架，合并为一个 `<style>` 块。
-4. 注入暗色模式切换脚本。
+#### P3. 矛盾模式
+**触发条件**：
+- 段落中出现 "争议"、"矛盾"、"冲突"、"分歧"、"对立"、"不同观点" 等词
+- 列表中有 "立场A/立场B"、"支持/反对" 成对结构
+- 引用块中包含 "vs" 或 "but" 连接的对立观点
+**特征**：两个来源/观点的直接冲突，不裁决只暴露
+
+#### P4. 概念讲解模式
+**触发条件**：
+- 段落结构为三段式："它是什么" / "为什么要分" / "怎么用" 或类似变体
+- 出现 "痛点"、"是什么"、"怎么工作"、"为什么"、"怎么用" 等标志性短语
+- 对单一术语进行系统性解释
+**特征**：向非专业读者解释一个概念
+
+#### P5. 数据模式
+**触发条件**：
+- 列表项主要是数字+标签（如"87% 市场占有率"）
+- 段落中包含大量百分比、数值对比
+- 表格中数字列占主导
+**特征**：可被可视化的数值信息
+
+#### P6. 证据链模式
+**触发条件**：
+- 列表或段落呈现 "来源 → 引用 → 推理 → 结论" 的递进结构
+- 明确标注了引文、出处、推导步骤
+**特征**：从原始来源到最终结论的推理路径
+
+#### P7. 缺口模式
+**触发条件**：
+- 内容中出现 "待补"、"缺口"、"盲区"、"未验证"、"假设"、"未来工作"、"局限性" 等词
+- 单源结论（只有一个来源支撑）
+**特征**：需要后续补充的信息
+
+#### P8. 步骤模式
+**触发条件**：
+- 有序列表，项数为 "1. 2. 3." 的连续步骤
+- 包含 "检查清单"、"TODO"、"第一步/第二步" 等结构
+**特征**：行动指南的分步操作
+
+#### P9. 发现/结论模式
+**触发条件**：
+- 段落以结论性语句开头（"结论是"、"我们发现"、"实验表明"）
+- 包含置信度暗示（"高度确信"、"可能"、"尚不确定"）
+- 有证据支撑和缺口标注
+**特征**：调研的核心发现
+
+### Step 3：组件渲染
+
+匹配到模式后，从 `references/components.md` 读取对应组件的HTML模板和CSS，将内容数据注入模板生成具体HTML。
+
+**数据提取规则**：
+- 从Markdown结构中自动提取字段（日期、标题、描述、数值、来源等）
+- 置信度自动推断：关键词"确定/证实/实验"→H，"可能/倾向/观察"→M，"假设/推测/单源"→L
+- 来源自动提取：链接文字、引用标记、标注的作者标题
+
+### Step 4：普通Markdown渲染
+
+未匹配到任何模式的内容单元，按标准Markdown渲染为HTML：
+- 标题 → `<h1>`~`<h6>`
+- 段落 → `<p>`
+- 列表 → `<ul>`/`<ol>`
+- 引用 → `<blockquote>`
+- 代码 → `<pre><code>`
+- 表格 → `<table>`
+- 粗体/斜体/链接 → 正常转换
+
+### Step 5：组装HTML骨架
+
+**海报布局特殊处理（layout=poster）：**
+- 标题区：从 Markdown 第一个 `#` 提取标题，第一个 `##` 提取副标题，首段作为引导文
+- 内容分区：将内容块分配到 `.poster-main`（主内容）和 `.poster-sidebar`（侧栏）
+  - 侧栏内容标识：引用块 `>` 或标注为侧栏的段落
+  - 其余内容进入主区域
+- 所有主内容块自动包裹在 `<div class="poster-card">` 中
+- 排行数据（表格/数值列表）→ `rank-list` 组件
+- 带图标的说明列表 → `poster-icon-row` 组件
+- 注意事项段落 → `poster-alert` 组件
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="{theme}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<style>
+  /* 色板变量 */
+  /* 排版参数（poster-vintage 有额外覆盖） */
+  /* 布局CSS（article / tufte / poster） */
+  /* 组件CSS（仅注入实际用到的） */
+  /* 暗色模式 */
+</style>
+</head>
+<body>
+  <!-- 暗色切换按钮 -->
+  <!-- layout=poster 时 -->
+  <div class="report-body poster">
+    <header class="poster-header">
+      <h1>{title}</h1>
+      <div class="poster-subtitle">{subtitle}</div>
+      <div class="poster-lead">{lead}</div>
+    </header>
+    <div class="poster-main">
+      <!-- 主内容：poster-card 包裹的内容块 -->
+    </div>
+    <aside class="poster-sidebar">
+      <!-- 侧栏：poster-sidebar-item -->
+    </aside>
+  </div>
+  <!-- layout=article 时 -->
+  <div class="report-body">
+    <!-- 内容按顺序排列 -->
+  </div>
+  <!-- layout=tufte 时 -->
+  <div class="report-body tufte">
+    <!-- 内容按顺序排列 -->
+  </div>
+  <script>/* 暗色模式脚本 */</script>
+</body>
+</html>
+```
+
+### Step 6：样式注入
+
+1. 从 `references/themes.md` 读取选中色板的CSS变量
+2. 读取排版参数、间距Token
+3. 读取暗色模式变体
+4. **仅注入实际用到的组件CSS**（未匹配的组件不注入）
+5. 合并为一个 `<style>` 块
 
 ### Step 7：质量检查
 
-**工程检查（only）**：
-
-- [ ] 单文件自包含（`file://` 可直接打开）
+- [ ] 单文件自包含（`file://`可打开）
 - [ ] 暗色模式可切换
 - [ ] 移动端正常
-- [ ] 打印/PDF 可用
-- [ ] CSS 变量引用色板，无硬编码色值
-- [ ] 结构增强后的事实、数据、来源无丢失
-- [ ] 组件选择失败时有安全回退（渲染为段落/列表/表格）
-
-**不设叙事性专项自检**——全局 skill 不做内容改写，无需叙事自检。
+- [ ] 打印/PDF可用
+- [ ] CSS变量引用色板（无硬编码色值）
+- [ ] 组件渲染后的HTML结构完整
 
 ## 模式匹配优先级
 
 当一块内容可能匹配多个模式时，按以下优先级决定：
 
-1. **封面** > **章节入口** ——文档开头优先封面，H2 优先章节入口
-2. **冲突** > **对比** ——有"争议/冲突"关键词时优先冲突
-3. **时间线** > **步骤** ——有日期时间时优先时间线
-4. **数据/结论** > **普通段落** ——大量数字时优先可视化
-5. **概念讲解** > **普通段落** ——三段式讲解总是渲染为概念卡
-6. **证据推理** > **因果递进** ——含"来源/引用/推理/结论"优先证据链
-
-## 组件决策速查
-
-| 当你看到这种内容 | 选这个组件 | 变体依据 |
-|---|---|---|
-| 报告标题 + 引言 | hero-cover | 文档开头 |
-| H2 章节标题 | section-hero | 右上角章节标从标题关键词推断 |
-| H3 子标题 + 段落 | card | 标题关键词决定 accent/secondary/top/plain/concept |
-| 两方对照 | comparison | 含"冲突/争议"→ conflict，否则 contrast |
-| 步骤、清单 | list | 数字步骤→decimal，叙事步骤→roman，因果→chain |
-| 数字指标 | highlight | 多指标→kpi，单数据→stat，结论句→closing |
-| 引用、金句 | quote | 短句强调→pullquote，长引用→block |
-| 表格 | table | 一律加 .table-wrap |
-| 来源标注 | source-footer | 文末或卡片底部 |
-| 时间序列 | timeline | 日期/年份开头 |
-| 证据链 | chain--evidence | 来源→引用→推理→结论 |
-| 因果链 | chain--process | 递进/因果词 |
-| 缺口/盲区 | gap-box | 待补/未验证/假设 |
-| 步骤操作 | step-card | 有序步骤 + 检查清单 |
-| 数据图表 | chart | 数值数据可可视化 |
-| 流程图 | diagram | 流程/架构/拓扑 |
+1. **矛盾模式**（P3）> **对比模式**（P2）——有"争议/冲突"关键词时优先矛盾
+2. **时间线模式**（P1）> **步骤模式**（P8）——有日期时间时优先时间线
+3. **数据模式**（P5）> **发现模式**（P9）——大量数字时优先可视化
+4. **概念模式**（P4）优先于普通段落——三段式讲解总是渲染为概念卡
 
 ## 组件库
 
-见 `references/components.md`，包含 17 个组件：
+见 `references/components.md`，包含14个组件：
 
-**编辑式组件**：hero-cover · section-hero · card（5 变体）· list（4 变体）· comparison（2 变体）· highlight（3 变体）· quote（2 变体）· source-footer
-**研究组件**：timeline · chain（2 变体）· gap-box · badge-confidence · step-card · toc-nav · diagram · chart
-**通用组件**：table
+**叙事组件**：timeline-item · card-comparison · conflict-view · concept-card · step-card · card-finding
+**数据组件**：kpi-card · chart · diagram
+**结构组件**：evidence-chain · gap-box · source-tag · badge-confidence · toc-nav
+**海报组件**：rank-list · poster-card · poster-sidebar-item · poster-divider · poster-icon-row · poster-alert
 
-每个组件包含：触发条件 + 数据提取规则 + HTML 模板 + CSS。
+每个组件包含：触发条件 + 数据提取规则 + HTML模板 + CSS。
 
 ## 色板与排版
 
 见 `references/themes.md`。
 
-- 4 套色板：editorial-warm（编辑式暖纸媒）/ blue-orange（技术调研）/ purple-green（商业决策）/ warm-paper（文史知识创作）
-- 暗色模式：每套色板配 dark 变体
-- 排版：正文 17px、行高 1.85、行长 42em
-- 布局：单栏居中（默认）/ Tufte 边栏（可选）
+- 5套色板：blue-orange / purple-green / warm-paper / vintage-tech / poster-vintage
+- 暗色模式：每套色板配dark变体
+- 排版：正文17px、行高1.6、行长42em（poster-vintage 覆盖为16px/1.55/衬线体）
+- 布局：单栏居中（默认）/ Tufte边栏（可选）/ 海报布局（poster-vintage 专用）
 
 ## 资源文件
 
 | 路径 | 用途 |
-|---|---|
+|------|------|
 | references/components.md | 组件触发条件+数据提取规则+HTML模板+CSS |
 | references/themes.md | 色板+排版+间距Token+暗色模式 |
+| assets/*.html | HTML样例（风格参考，skill不读取） |
 
 ## 核心规则
 
-1. **agent 不写任何标记。** agent 只输出自然 Markdown，skill 负责全部结构分析和可视化。
-2. **skill 是智能引擎。** 不是模板填充器，而是内容感知型渲染器。
-3. **组件对 agent 不可见。** agent 不需要知道组件存在，不需要学习组件语法。
-4. **组件增减只改 skill。** 新增组件只需更新 skill 的 components.md，agent 完全无感知。
-5. **语义优先于视觉。** 先判断内容意图，再决定视觉变体。
-6. **默认安全回退。** 当无法确定组件时，回到段落、列表、表格等默认渲染。
-7. **事实不可丢失。** 结构增强必须保留所有关键数据、来源、引用。
-8. **不做内容改写。** 结构增强只做形式转换（bullet→段落），不补讲解、不补事实、不补前因后果。
-9. **不做业务编排。** 报告类型、读者定位、证据呈现策略、模板选择均由报告 agent 决定。
-10. **默认不显示内部置信度。** 不得自动把"确定/可能/假设"等普通文字转成 H/M/L 徽章。仅 `enable_confidence_badge=true` 时渲染。
-
-## 使用示例
-
-### 示例 1：编辑式趋势报告
-
-```markdown
-<!-- mode: editorial -->
-<!-- theme: editorial-warm -->
-
-# 2026知识管理趋势
-
-> 当AI接管了运算，人类的核心竞争力还剩什么？
-
-## 引言：从「冷存储」到「活资产」
-
-过去十年，企业知识管理其实只做了一件事：建仓库。
-...
-
-## 一、AI原生知识库
-
-### 定义
-
-AI原生知识库不是更聪明的搜索插件，而是围绕AI能力重新设计的系统。
-
-### 核心能力
-
-- 智能聚合：20+格式自动采集
-- 场景服务：自然语言问答
-- 持续进化：自动识别知识缺口
-```
-
-### 示例 2：调研报告（research 模式）
-
-```markdown
-<!-- mode: research -->
-
-## 结论
-
-我们发现，AI原生知识库能显著降低检索耗时。
-
-## 证据
-
-- 来源：Gartner 2025 报告
-- 引用："企业知识复用率不足 30%"
-- 推理：传统搜索依赖关键词，AI 语义检索更精准
-- 结论：检索耗时从 15 分钟降至 2 分钟以内
-```
+1. **agent不写任何标记**。agent只输出自然Markdown，skill负责全部结构分析和可视化。
+2. **skill是智能引擎**。不是模板填充器，而是内容感知型渲染器。
+3. **组件对agent不可见**。agent不需要知道组件存在，不需要学习组件语法。
+4. **组件增减只改skill**。新增组件只需更新skill的components.md，agent完全无感知。
+5. **模式识别可覆盖**。如果某块内容被错误匹配，可通过内容结构调整来引导（如改变措辞、调整结构）。
